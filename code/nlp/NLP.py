@@ -303,7 +303,7 @@ text_count_s.take(50)
 # Initial a CountVectorizer
 cv = CountVectorizer(inputCol="finished_final", 
                      outputCol="tf",
-                     vocabSize=100) # consider only the 1000 most frequent terms
+                     vocabSize=1000) # consider only the 1000 most frequent terms
 
 # Fit the cleaned data
 cv_model_s = cv.fit(df_cleaned_s)
@@ -313,7 +313,8 @@ df_cv_s = cv_model.transform(df_cleaned_s)
 
 # Initial a TfidfVectorizer based on the result of CountVectorizer
 idf = IDF(inputCol='tf', 
-         outputCol='tfidf')
+        outputCol='tfidf',
+         )
 
 # Fit the data
 idf_model_s = idf.fit(df_cv_s)
@@ -327,7 +328,7 @@ vocab_s = spark.createDataFrame(pd.DataFrame({'word': cv_model_s.vocabulary,
 # COMMAND ----------
 
 vocab_s = vocab_s.sort('tfidf', ascending=False)
-vocab_s.show(20)
+vocab_s.show(50)
 
 # COMMAND ----------
 
