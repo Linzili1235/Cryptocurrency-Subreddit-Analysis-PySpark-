@@ -1,0 +1,156 @@
+*{margin:0; padding:0;}
+body{ font:16px/1.5 Times New Roman,tahoma,arial,Trebuchet MS; color:#333333;}
+a{text-decoration:none; color:#000;}
+a:hover{text-decoration:none; color:#0653b6 !important;}
+.clear { clear:both; display:block; overflow:hidden; visibility:hidden; width:0; height:0 }
+.clearfix {*zoom:1;}
+.clearfix:after {display:block; clear:both; height:0; overflow:hidden; content:"";}
+a:hover{color: #000 !important;}
+html,body{height:100%; background:#FFF;}
+.navbar-default {
+     background-color: #fff; 
+     border-color: #fff; 
+}
+.navbar-default .navbar-nav>li>a{
+	font-size: 18px;
+	font-weight: bold;
+	color: #000;
+}
+.navbar-default .navbar-nav>li>a.active{
+	background-color: #FDF8E4;
+}
+.navbar-nav{
+	margin-top: 10px;
+	margin-left: 55%;
+}
+.navbar-brand span{
+	font-size: 40px;
+	font-weight: bold;
+	margin-top: 10px;
+	display: inline-block;
+	color: #000;
+}
+.imga{
+	max-height: 500px;
+	width:100%;
+}
+.imgb{
+	width: 100%;
+	height: 250px;
+}
+.tit {
+	margin-bottom: 30px;
+	margin-top: 50px;
+	text-align: center;
+}
+.tit h2{
+	font-size: 40px;
+}
+.overview{
+	margin-bottom: 30px;
+	margin-top: 30px;
+}
+.overview .right img{
+	margin-top: 50px;
+}
+.cont{
+	border:1px solid #e0e0e0;
+	padding: 15px 15px 10px;
+	margin-bottom: 20px;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cont .name{
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+.author h2{
+	font-size: 36px;
+	margin-bottom: 50px;
+	margin-top: 50px;
+}
+.author {
+	font-size: 24px;
+}
+.author .right1{
+	padding-top: 30px;
+}
+.footer{
+	padding-bottom: 20px;
+	padding-top: 20px;
+	background-color: #f8f8f8;
+	margin-top: 80px;
+}
+.ft{
+	color: #b5b5b5;
+	margin-top: 40px;
+	padding-top: 10px;
+	margin-bottom: 40px;
+	display: flex;
+}
+.ft h4{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ft p{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*coffee*/
+.coffee .left p{
+	font-size: 20px;
+	margin-top: 30px;
+}
+.coffee .right{
+	margin-top: 50px;
+}
+.list .row{
+	margin-top: 30px;
+}
+.list h2{
+	margin-left: 15px;
+}
+.list .right1 {
+	font-size: 18px;
+	min-height: 250px;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.list1{
+	margin-top: 40px;
+}
+.list1 h2{
+	margin-left: 0px;
+	margin-top: 0;
+}
+.list1 .right1 {
+	display: inherit;
+}
+/*ways*/
+.w1 img{
+	width: 80%;
+}
+.ways h3{
+	justify-content: left;
+    align-items: center;
+    display: flex;
+}
+.ways h2{
+		margin-bottom: 40px;
+}
+.ways .row{
+	border-bottom: 2px solid #000;
+	padding-bottom: 20px;
+}
+
+@media screen and (max-width:700px){
+.navbar-nav{
+	margin-left: 0;
+}
+}

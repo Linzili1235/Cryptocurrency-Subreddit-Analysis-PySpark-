@@ -688,6 +688,10 @@ result = result.filter(result.labels.isNotNull())
 
 # COMMAND ----------
 
+result.show(5)
+
+# COMMAND ----------
+
 # Two way tables
 table_sentiment = result.groupby('labels','crypto_term').count().sort('count', ascending=False)
 
@@ -940,85 +944,3 @@ fig.update_layout(
     })
 fig.show()
 fig.write_html('../../images/figure_question3.html')
-
-# COMMAND ----------
-
-fig = make_subplots(specs=[[{"secondary_y": True}]])
-trace1 = go.Scatter(x = df["Date"],
-                   y = df["Bitcoin_Price"],
-                   name="Bitcoin Price",
-                   yaxis='y2')
-trace2 = go.Bar(x=df["Date"], y = df["count"],name="sentiment")
-#                barmode = "group")
-
-# trace2 = go.Bar(x = df_merge["labels"],
-#                y = df_merge["count"],
-#                name="sentiment")
-
-fig.add_trace(trace1,secondary_y=False)
-fig.add_trace(trace2,secondary_y=True)
-
-
-fig.update_layout(
-    title = {
-        'text': 'Sentiment Changes with Bitcoin Prices',
-        'y':0.95,
-        'x':0.50,
-        'xanchor': 'center',
-        'yanchor': 'top'
-    })
-fig.show()
-#,name='bitcoin price'
-#,name='sentiment count'
-
-# COMMAND ----------
-
-labels = df_merge["Date"].drop_duplicates(keep='first')
-positive = df_merge[df_merge["labels"] == "positive"]["count"]
-negative = df_merge[df_merge["labels"] == "negative"]["count"]
-neutral = df_merge[df_merge["labels"] == "neutral"]["count"]
-
-x = np.arange(len(labels))
-# print(x)
-width = 0.1
-labels = labels.astype("datetime64")
-# print(labels)
-# print(len(positive))
-
-fig, ax = plt.subplots()
-ax2 = ax.twinx()
-ax.bar(x - width, positive, width, label = "positive")
-ax.bar(x, negative, width, label  = "negative")
-ax.bar(x + width, neutral, width, label = "neutral")
-
-# Add some text for labels, title and custom x-axis tick labels, etc.
-ax.set_ylabel('Sentiment Frequency')
-ax.set_title('Sentiment Changes with Bitcoin Prices')
-ax.set_xticks(x)
-ax.set_xticklabels(labels)
-ax.legend()
-
-
-# def autolabel(rects):
-#     """Attach a text label above each bar in *rects*, displaying its height."""
-#     for rect in rects:
-#         height = rect.get_height()
-#         ax.annotate('{}'.format(height),
-#                     xy=(rect.get_x() + rect.get_width() / 3, height),
-#                     xytext=(0, 3),  # 3 points vertical offset
-#                     textcoords="offset points",
-#                     ha='center', va='bottom')
-# autolabel(rec1)
-# autolabel(rec2)
-# autolabel(rec3)
-# dates = data["Date"].astype("datetime64")
-# print(dates)
-#ax2.plot(dates,data["Bitcoin_Price"],color="seagreen",label="bitcoin price")
-#ax2.set_ylabel("Bitcoin Price")
-
-fig.set_figwidth(20)
-fig.set_figheight(10)
-fig.show()
-
-
-
