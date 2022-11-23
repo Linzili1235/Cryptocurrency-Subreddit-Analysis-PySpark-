@@ -52,14 +52,19 @@ spark
 # MAGIC Technical proposal: First split the sentences into words, stem, and delete stopwords. Then use CountVectorizer to count the number of words with real meanings. Finally, use TF-IDF to find the words’ importance and extract the most important words. 
 # MAGIC $$$$
 # MAGIC 
-# MAGIC From the wordcloud about most common words in the submission topics, we can see that users who post the Reddit submissions under cryptocurrency have great concerns about topics such as "bitcoin","cryptocurrencies","eth" and so on. Although with the popularity of different cryptocurrencies in recent years, such as dogecoin, ethereum, bitcoin still attracts extensive attention from the public. From the most common words shown above, the main purpose of users posting the submissions is to buy, invest, and sell cryptocurrencies since words like "price","market", "wallet" are of great amount in the topics. 
+# MAGIC From the wordcloud on the most common words in the submission topics, we can see that users who post the Reddit submissions under cryptocurrency have significant concerns about topics such as "bitcoin","cryptocurrencies","eth" and so on. Although with the popularity of different cryptocurrencies in recent years, such as Dogecoin, Ethereum, Bitcoin still attracts extensive attention from the public. From the most common words shown above, the main purpose of users posting the submissions is to buy, invest, and sell cryptocurrencies since words like "price","market", "wallet" are of great amount in the topics. 
 # MAGIC 
-# MAGIC From the wordcloud about most important words of the comment body, we can find that users who comment under the topic of cryptocurrency are likely to bring up words such as "pow","fork","pop" and so on. Different from the users who come up with the question about the prices of cryptocurrencies in the submissions, commenters tend to give replies in a more professional way, such as discussing about different protocols and crypto terminalogies like pow,algorand and polygon. Just as the "art" shown in the wordcloud, in about 20 words (see from the distribution of the comments from cryptocurrency, the majority of comment length lies below 20), commenters describe cryptocurrencies as arts while the question posters see them as products with values.
+# MAGIC From the wordcloud on the most important words of the comment body, we can find that users who comment under the topic of cryptocurrency are likely to bring up words such as "pow","fork","pop" and so on. Different from the users who come up with the question about the prices of cryptocurrencies in the submissions, commenters tend to give replies in a more professional way, such as discussing about different protocols and crypto terminologies like PoW, Algorand, and Polygon. Just as the "art" shown in the wordcloud, in about 20 words (see from the distribution of the comments from cryptocurrency, the majority of comment length lies below 20), commenters describe cryptocurrencies as arts while the question posters see them as products with values.
 # MAGIC 
 # MAGIC #### Business goal 6:
 # MAGIC NLP:  What’s people’s attitude on Reddit posts and comments that mention the buzzwords?
 # MAGIC #### Technical proposal:
 # MAGIC Technical proposal: Reuse the most frequent words acquired earlier, and filter for the sentences that contain the buzzwords. Then perform sentiment analysis on the corpus. Use TextBlob and Vader to find the sentiment polarity. Also, do the data visualization of the sentimental polarity distribution.
+# MAGIC $$$$
+# MAGIC 
+# MAGIC Based on the sentiment analysis on Reddit comments, we were able to obtain people’s attitudes (positive/neutral/negative) on various important concepts and terminologies related to cryptocurrency, based on the assumption that a sentence containing a keyword will also be discussing that keyword.  To better understand how people’s attitudes are divided, we selected a few keywords according to their importance ranking based on TF-IDF. From the pie charts, we can see that comments are generally positive towards “PoW” and “fork”. PoW stands for Proof of Work, which refers to a form of cryptographic proof in which one party proves to others that a certain amount of a specific computational effort has been expended. On the other hand, Fork is a technical phenomenon that occurs when a blockchain splits into two separate branches whenever a community makes a change to the blockchain’s protocol or basic set of rules. Surprisingly, the majority of comments are negative towards the general term “cryptocurrency”. “Jargon”, which is a composite category that combines the results of the previous three keywords shows a slightly negative attitude, mostly due to the negative attitude towards “cryptocurrency” in general. We reckon that people associate negative emotions with “cryptocurrency” because conversations related to this topic are highly likely to involve discussion of trading and currency price, which is quite volatile and may lead to dissatisfaction. 
+# MAGIC 
+# MAGIC We also selected a few keywords about digital currency titles and protocols with high importance based on TF-IDF. Apparently, comments are mostly positive about Bitcoin and Ethereum, which indicates that the two digital currencies are going quite strong over the last year. Moreover, the majority of comments are also positive towards protocols such as Polygon and Algorand, which suggests that people are confident and optimistic about the technology. 
 # MAGIC 
 # MAGIC $$$$
 # MAGIC 
@@ -883,58 +888,108 @@ df_merge = pd.merge(df_date1,data,how="outer")
 
 # COMMAND ----------
 
-fig = go.Figure(
-    data=[
-        go.Bar(name='Population', x=datasort["country"], y=datasort["population"], yaxis='y', offsetgroup=1),
-        go.Bar(name='GDP per Capita', x=datasort["country"], y=datasort["gdpPerCapita"], yaxis='y2', offsetgroup=2)
-    ],
-    layout={
-        'yaxis': {'title': 'Population (in Billions) '},
-        'yaxis2': {'title': 'GDP per Capita (in Millions)', 'overlaying': 'y', 'side': 'right'}
-    }
-)
- 
-# Change the bar mode
-fig.update_layout(barmode='group')
+print(df_merge.head(),'\n')
+print(len(df_merge),'\n')
+df_merge.dtypes
+
+# COMMAND ----------
+
+df_merge['labels'] = df_merge['labels'].astype("string")
+df_merge['Date'] = df_merge['Date'].astype("datetime64")
+
+# COMMAND ----------
+
+# drop all neutral entries
+df = df_merge
+df = df[df.labels != 'neutral']
+
+# calcualte (positive - negative) count
+df['count'] = df.groupby('Date')['count'].diff(1)
+
+# drop labels column
+df=df.drop('labels', axis=1)
+
+# drop rows with nan
+df=df.dropna()
+print(df.head())
+
+
+# COMMAND ----------
+
+data = [go.Scatter(x = df["Date"],
+                   y = df["Bitcoin_Price"],
+                   name="Bitcoin Price",
+                   yaxis='y2'),
+       go.Bar(x=df["Date"], y = df["count"],name="Net Positive Sentiment")]
+y1 = go.YAxis(title='Amount of Net Postive Reviews', titlefont=go.Font(color='SteelBlue'))
+y2 = go.YAxis(title= 'Bitcoin Prices', titlefont=go.Font(color='DarkOrange'))
+
+y2.update(overlaying='y', side='right')
+
+# Add the pre-defined formatting for both y axes 
+layout = go.Layout(yaxis1 = y1, yaxis2 = y2)
+
+fig = go.Figure(data=data, layout=layout)
+fig.update_layout(
+    title = {
+        'text': 'Sentiment Changes with Bitcoin Prices',
+        'y':0.95,
+        'x':0.50,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    })
 fig.show()
+fig.write_html('../../images/figure_question3.html')
 
 # COMMAND ----------
 
 fig = make_subplots(specs=[[{"secondary_y": True}]])
-trace1 = go.Scatter(x = df_merge["Date"],
-                   y = df_merge["Bitcoin_Price"],
+trace1 = go.Scatter(x = df["Date"],
+                   y = df["Bitcoin_Price"],
                    name="Bitcoin Price",
                    yaxis='y2')
-trace2 = go.Bar(x=df_merge["labels"], y =df_merge["count"])
+trace2 = go.Bar(x=df["Date"], y = df["count"],name="sentiment")
 #                barmode = "group")
 
 # trace2 = go.Bar(x = df_merge["labels"],
 #                y = df_merge["count"],
 #                name="sentiment")
-layout = go.Layout(barmode = "group")
-trace2 = go.Figure(data=trace2,layout = layout)
-trace2.show()
-# fig.add_trace(trace1,secondary_y=False)
-# # fig.add_trace(trace2,secondary_y=True)
-# fig.show()
+
+fig.add_trace(trace1,secondary_y=False)
+fig.add_trace(trace2,secondary_y=True)
+
+
+fig.update_layout(
+    title = {
+        'text': 'Sentiment Changes with Bitcoin Prices',
+        'y':0.95,
+        'x':0.50,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    })
+fig.show()
 #,name='bitcoin price'
 #,name='sentiment count'
 
 # COMMAND ----------
 
-labels = df_merge["Date"]
+labels = df_merge["Date"].drop_duplicates(keep='first')
 positive = df_merge[df_merge["labels"] == "positive"]["count"]
 negative = df_merge[df_merge["labels"] == "negative"]["count"]
 neutral = df_merge[df_merge["labels"] == "neutral"]["count"]
 
 x = np.arange(len(labels))
+# print(x)
 width = 0.1
+labels = labels.astype("datetime64")
+# print(labels)
+# print(len(positive))
 
 fig, ax = plt.subplots()
 ax2 = ax.twinx()
-rec1 = ax.bar(x - width/3, positive, width, label = "positive")
-rec2 = ax.bar(x, negative, width, label  = "negative")
-rec3 = ax.bar(x + width/3, neutral, width, label = "neutral")
+ax.bar(x - width, positive, width, label = "positive")
+ax.bar(x, negative, width, label  = "negative")
+ax.bar(x + width, neutral, width, label = "neutral")
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 ax.set_ylabel('Sentiment Frequency')
@@ -944,22 +999,26 @@ ax.set_xticklabels(labels)
 ax.legend()
 
 
-def autolabel(rects):
-    """Attach a text label above each bar in *rects*, displaying its height."""
-    for rect in rects:
-        height = rect.get_height()
-        ax.annotate('{}'.format(height),
-                    xy=(rect.get_x() + rect.get_width() / 3, height),
-                    xytext=(0, 3),  # 3 points vertical offset
-                    textcoords="offset points",
-                    ha='center', va='bottom')
-autolabel(rec1)
-autolabel(rec2)
-autolabel(rec3)
+# def autolabel(rects):
+#     """Attach a text label above each bar in *rects*, displaying its height."""
+#     for rect in rects:
+#         height = rect.get_height()
+#         ax.annotate('{}'.format(height),
+#                     xy=(rect.get_x() + rect.get_width() / 3, height),
+#                     xytext=(0, 3),  # 3 points vertical offset
+#                     textcoords="offset points",
+#                     ha='center', va='bottom')
+# autolabel(rec1)
+# autolabel(rec2)
+# autolabel(rec3)
+# dates = data["Date"].astype("datetime64")
+# print(dates)
+#ax2.plot(dates,data["Bitcoin_Price"],color="seagreen",label="bitcoin price")
+#ax2.set_ylabel("Bitcoin Price")
 
-ax2.plot(df_merge["Date"],df_merge["Bitcoin_Price"],color="seagreen",label="bitcoin price")
-ax2.set_ylabel("Bitcoin Price")
-
+fig.set_figwidth(20)
+fig.set_figheight(10)
 fig.show()
+
 
 
