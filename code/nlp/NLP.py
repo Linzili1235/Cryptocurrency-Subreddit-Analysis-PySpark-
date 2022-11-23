@@ -15,12 +15,19 @@ from sparknlp.pretrained import PretrainedPipeline
 from operator import add
 from functools import reduce
 from pyspark.ml.feature import CountVectorizer,IDF
+from wordcloud import WordCloud
 
 # COMMAND ----------
 
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
+
+# COMMAND ----------
+
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
 
 # COMMAND ----------
 
@@ -45,6 +52,10 @@ spark
 # MAGIC Technical proposal: First split the sentences into words, stem, and delete stopwords. Then use CountVectorizer to count the number of words with real meanings. Finally, use TF-IDF to find the words’ importance and extract the most important words. 
 # MAGIC $$$$
 # MAGIC 
+# MAGIC From the wordcloud about most common words in the submission topics, we can see that users who post the Reddit submissions under cryptocurrency have great concerns about topics such as "bitcoin","cryptocurrencies","eth" and so on. Although with the popularity of different cryptocurrencies in recent years, such as dogecoin, ethereum, bitcoin still attracts extensive attention from the public. From the most common words shown above, the main purpose of users posting the submissions is to buy, invest, and sell cryptocurrencies since words like "price","market", "wallet" are of great amount in the topics. 
+# MAGIC 
+# MAGIC From the wordcloud about most important words of the comment body, we can find that users who comment under the topic of cryptocurrency are likely to bring up words such as "pow","fork","pop" and so on. Different from the users who come up with the question about the prices of cryptocurrencies in the submissions, commenters tend to give replies in a more professional way, such as discussing about different protocols and crypto terminalogies like pow,algorand and polygon. Just as the "art" shown in the wordcloud, in about 20 words (see from the distribution of the comments from cryptocurrency, the majority of comment length lies below 20), commenters describe cryptocurrencies as arts while the question posters see them as products with values.
+# MAGIC 
 # MAGIC #### Business goal 6:
 # MAGIC NLP:  What’s people’s attitude on Reddit posts and comments that mention the buzzwords?
 # MAGIC #### Technical proposal:
@@ -53,21 +64,94 @@ spark
 # MAGIC $$$$
 # MAGIC 
 # MAGIC #### Business goal 7:
-# MAGIC NLP: For one of the most popular branches of cryptocurrency, how does sentiment related to dogecoin change with respect to its price?
+# MAGIC NLP: For one of the most popular branches of cryptocurrency, how does sentiment related to bitcoin change with respect to its price?
 # MAGIC #### Technical proposal：
-# MAGIC Technical proposal: Use NLP to identify posts that mention dogecoins, or look at future forms of dogecoins. Perform sentiment analysis on posts and assign a positive or negative value to each post. To determine the market development potential of dogecoin as an emerging virtual currency.
+# MAGIC Technical proposal: Use NLP to identify posts that mention bitcoins, or look at future forms of bitcoins. Perform sentiment analysis on posts and assign a positive or negative value to each post. To determine the market development potential of bitcoin as an emerging virtual currency.
 # MAGIC $$$$
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC ## I. Import cleaned data
-
-# COMMAND ----------
+# Import data
+df_sub_p = spark.read.parquet("/FileStore/pipelinedSubmission")
+df_com_p = spark.read.parquet("/FileStore/pipelinedComment")
 
 df_sub = spark.read.parquet("/FileStore/submissions2")
 df_com = spark.read.parquet("/FileStore/comments2")
-df_bit = pd.read_csv("/data/csv/Merged_bitcoin.csv")
+df_bit = pd.read_csv("../../data/csv/Merged_bitcoin.csv", index_col=False)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## I. Insights on External data 
+
+# COMMAND ----------
+
+df_bit = df_bit.drop(columns=['Unnamed: 0'])
+df_bit.head()
+
+# COMMAND ----------
+
+# Show statistics of the data
+df_bit['Count'].describe()
+
+# COMMAND ----------
+
+df_bit['Bitcoin_Price'].describe()
+
+# COMMAND ----------
+
+# Distribution of Bitcoin Price
+fig = px.histogram(df_bit, x='Bitcoin_Price', title="Distribution of Bitcoin Price", 
+                   height=500,template='seaborn',
+                  labels={ # replaces default labels by column name
+                "Bitcoin_Price": "Bitcoin Price($)",  "count": "Frequency"
+            })
+fig.update_layout( # customize font and legend orientation & position
+    font_family="Rockwell",
+    
+)
+
+fig.show()
+fig.write_html("../../images/figure_distri_BTC.html")
+
+# COMMAND ----------
+
+# Price of Bitcoin over time  in S
+
+# Sort the Date because there some inconsistent dates
+data = df_bit.sort_values(by=['Date'])
+
+fig = px.line(data,x = "Date", y= 'Bitcoin_Price', title = 'Price of Bitcoin($) Over Time',template='seaborn' )
+
+# Add range slider
+fig.update_xaxes(
+    rangeslider_visible=True,
+    rangeselector=dict(
+        buttons=list([
+            dict(count=1, label="1m", step="month", stepmode="backward"),
+            dict(count=6, label="6m", step="month", stepmode="backward"),
+            dict(count=1, label="YTD", step="year", stepmode="todate"),
+            dict(count=1, label="1y", step="year", stepmode="backward"),
+            dict(step="all")
+        ])
+    )
+)
+fig.show()
+fig.write_html("../../images/figure_line.html")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## II. Natural Language Processing
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### Analysis goals
+# MAGIC 
+# MAGIC + What is the distribution of text lengths? 
+# MAGIC + What are the most common words overall or over time? 
+# MAGIC + What are important words according to TF-IDF?
 
 # COMMAND ----------
 
@@ -87,16 +171,7 @@ df_com.printSchema()
 
 # COMMAND ----------
 
-print(df_bit)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Analysis goals
-# MAGIC 
-# MAGIC + What is the distribution of text lengths? 
-# MAGIC + What are the most common words overall or over time? 
-# MAGIC + What are important words according to TF-IDF?
+df_bit.head()
 
 # COMMAND ----------
 
@@ -148,7 +223,7 @@ fig.update_layout( # customize font and legend orientation & position
 )
 
 fig.show()
-# fig.write_html('fig_5.html')
+fig.write_html('../../images/fig_distr_Submission.html')
 
 # COMMAND ----------
 
@@ -163,12 +238,12 @@ fig.update_layout( # customize font and legend orientation & position
 )
 
 fig.show()
-# fig.write_html('fig_5.html')
+fig.write_html('../../images/fig_distr_Comment.html')
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## II. Clean the text data using JohnSnowLabs sparkNLP
+# MAGIC #### Clean the text data using JohnSnowLabs sparkNLP
 # MAGIC 
 # MAGIC + a. Submission data
 # MAGIC + b. Comment data
@@ -180,8 +255,7 @@ eng_stopwords = stopwords.words('english')
 # Transform the raw text into the form of document
 # for subumission, input should be title
 documentAssembler = DocumentAssembler() \
-    .setInputCol("body") \ # For Comments
-#     .setInputCol("title") \ # For Submission
+    .setInputCol("body") \
     .setOutputCol("document")
 
 sentenceDetector = SentenceDetector() \
@@ -252,7 +326,7 @@ pipeline = Pipeline().setStages([
 
 # COMMAND ----------
 
-df_text_s = df_sub.select("title")
+df_text_s = df_sub
 # Fit the dataset into the pipeline
 df_cleaned_s = pipeline.fit(df_text_s).transform(df_text_s)
 
@@ -278,7 +352,8 @@ df_cleaned_s.show()
 # COMMAND ----------
 
 # Transform the dataframe into rdd
-text_rdd_s = df_cleaned_s.select('finished_final').rdd
+# text_rdd_s = df_cleaned_s.select('finished_final').rdd
+text_rdd_s = df_sub_p.select('finished_final').rdd
 
 # COMMAND ----------
 
@@ -307,7 +382,15 @@ cv = CountVectorizer(inputCol="finished_final",
 
 # Fit the cleaned data
 cv_model_s = cv.fit(df_cleaned_s)
-df_cv_s = cv_model.transform(df_cleaned_s)
+df_cv_s = cv_model_s.transform(df_cleaned_s)
+
+# COMMAND ----------
+
+df_cv_s.show(10)
+
+# COMMAND ----------
+
+## df_cv_s1 = df_cv_s.withColumn('tf_dense',df_cv_s.select('tf').map(lambda x: Vectors.sparse(x)))
 
 # COMMAND ----------
 
@@ -318,7 +401,7 @@ idf = IDF(inputCol='tf',
 
 # Fit the data
 idf_model_s = idf.fit(df_cv_s)
-df_idf_s = idf_model.transform(df_cv_s)
+df_idf_s = idf_model_s.transform(df_cv_s)
 
 # COMMAND ----------
 
@@ -328,7 +411,47 @@ vocab_s = spark.createDataFrame(pd.DataFrame({'word': cv_model_s.vocabulary,
 # COMMAND ----------
 
 vocab_s = vocab_s.sort('tfidf', ascending=False)
-vocab_s.show(50)
+
+# COMMAND ----------
+
+tf_df_s = text_count_s.collect()
+tf_df_s = pd.DataFrame(tf_df_s)
+print(len(tf_df_s))
+
+# COMMAND ----------
+
+tf_df_s.head()
+
+# COMMAND ----------
+
+# Normalize TF-IDF
+maxX = tf_df_s.max()[1]
+minX = tf_df_s.min()[1]
+
+norm_tfdf = tf_df_s[:]
+norm_tfdf[1] = (norm_tfdf[1]-minX)/(maxX-minX)
+
+print(norm_tfdf.head())
+
+# COMMAND ----------
+
+# Construct the wordcloud for Submission based on word count
+x, y = np.ogrid[:300, :300]
+
+mask = (x - 150) ** 2 + (y - 150) ** 2 > 130 ** 2
+mask = 255 * mask.astype(int)
+
+tmpDict = pd.Series(norm_tfdf[1].values,index=norm_tfdf[0]).to_dict()
+Cloud = WordCloud(background_color="white", max_words=50,mask=mask).generate_from_frequencies(tmpDict)
+plt.figure(figsize=[10,10])
+plt.imshow(Cloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC From the wordcloud about most common words in the submission topics, we can see that users who post the Reddit submissions under cryptocurrency have great concerns about topics such as "bitcoin","cryptocurrencies","eth" and so on. Although with the popularity of different cryptocurrencies in recent years, such as dogecoin, ethereum, bitcoin still attracts extensive attention from the public. From the most common words shown above, the main purpose of users posting the submissions is to buy, invest, and sell cryptocurrencies since words like "price","market", "wallet" are of great amount in the topics. 
 
 # COMMAND ----------
 
@@ -342,7 +465,7 @@ vocab_s.show(50)
 
 # COMMAND ----------
 
-df_text_c = df_com.select("body")
+df_text_c = df_com
 # Fit the dataset into the pipeline
 df_cleaned_c = pipeline.fit(df_text_c).transform(df_text_c)
 
@@ -396,8 +519,8 @@ cv = CountVectorizer(inputCol="finished_final",
                      vocabSize=1000) # consider only the 1000 most frequent terms
 
 # Fit the cleaned data
-cv_model = cv.fit(df_cleaned_c)
-df_cv = cv_model.transform(df_cleaned_c)
+cv_model_c = cv.fit(df_cleaned_c)
+df_cv = cv_model_c.transform(df_cleaned_c)
 
 # COMMAND ----------
 
@@ -411,17 +534,85 @@ df_idf = idf_model.transform(df_cv)
 
 # COMMAND ----------
 
-vocab_c = spark.createDataFrame(pd.DataFrame({'word': cv_model.vocabulary, 
+vocab_c = spark.createDataFrame(pd.DataFrame({'word': cv_model_c.vocabulary, 
                                             'tfidf': idf_model.idf}))
 
 # COMMAND ----------
 
 vocab_c = vocab_c.sort('tfidf', ascending=False)
-vocab_c.show(50)
+
 
 # COMMAND ----------
 
+tf_df_c = vocab_c.collect()
+tf_df_c = pd.DataFrame(tf_df_c)
+print(len(tf_df_c))
 
+# COMMAND ----------
+
+# Normalize TF-IDF
+maxX = tf_df_c.max()[1]
+minX = tf_df_c.min()[1]
+
+norm_tfdf = tf_df_c[:]
+norm_tfdf[1] = (norm_tfdf[1]-minX)/(maxX-minX)
+
+print(norm_tfdf.head())
+
+# COMMAND ----------
+
+x, y = np.ogrid[:300, :300]
+
+mask = (x - 150) ** 2 + (y - 150) ** 2 > 130 ** 2
+mask = 255 * mask.astype(int)
+
+tmpDict = pd.Series(norm_tfdf[1].values,index=norm_tfdf[0]).to_dict()
+Cloud = WordCloud(background_color="white", max_words=50,mask=mask).generate_from_frequencies(tmpDict)
+plt.figure(figsize=[10,10])
+plt.imshow(Cloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+# COMMAND ----------
+
+# MAGIC %md
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC From the wordcloud about most important words of the comment body, we can find that users who comment under the topic of cryptocurrency are likely to bring up words such as "pow","fork","pop" and so on. Different from the users who come up with the question about the prices of cryptocurrencies in the submissions, commenters tend to give replies in a more professional way, such as discussing about different protocols and crypto terminalogies like pow,algorand and polygon. Just as the "art" shown in the wordcloud, in about 20 words (see from the distribution of the comments from cryptocurrency, the majority of comment length lies below 20), commenters describe cryptocurrencies as arts while the question posters see them as products with values.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### Identify important keywords for your reddit data and use regex searches to create at least two dummy variables
+
+# COMMAND ----------
+
+# Define a function to union the words into a sentence
+wordToText = f.udf(lambda x:' '.join(x))
+# Apply the function to create the cleaned text
+df_senti_c = df_cleaned_c.withColumn('text', wordToText(f.col('finished_final')))
+
+# COMMAND ----------
+
+# Use Regex to find comments that mention different cryptocurrencies
+
+df = df_senti_c
+
+df = df.withColumn('crypto_term', when(df.text.rlike('(?i)pow'), 'pow')
+                                   .when(df.text.rlike('(?i)fork'), 'fork')
+                                   .when(df.text.rlike('(?i)cryptocurrenc'), 'cryptocurrencies')
+                                   .otherwise('N/A'))
+df = df.withColumn('BTC', when(df.text.rlike('(?i)bitcoin|(?i)btc'), 1).otherwise(0))
+df = df.withColumn('ETH', when(df.text.rlike('(?i)ethereum|ETH'), 1).otherwise(0))
+df = df.withColumn('polygon', when(df.text.rlike('(?i)polygon'), 1).otherwise(0))
+df = df.withColumn('algorand', when(df.text.rlike('(?i)algorand'), 1).otherwise(0))
+df = df.withColumn('robinhood', when(df.text.rlike('(?i)robinhood'), 1).otherwise(0))
+
+# COMMAND ----------
+
+df.show(10)
 
 # COMMAND ----------
 
@@ -430,31 +621,220 @@ vocab_c.show(50)
 
 # COMMAND ----------
 
+# Define sentiment pipeline
+documentAssembler = DocumentAssembler() \
+    .setInputCol("text") \
+    .setOutputCol("document")
 
+use = UniversalSentenceEncoder.pretrained('tfhub_use', lang="en") \
+    .setInputCols(["document"])\
+    .setOutputCol("sentence_embeddings")
+
+sentimentdl = SentimentDLModel().pretrained('sentimentdl_use_twitter')\
+    .setInputCols(["sentence_embeddings"])\
+    .setOutputCol("sentiment")
+
+nlpPipeline = Pipeline(
+    stages = [
+        documentAssembler,
+        use,
+        sentimentdl
+    ])
+
+# COMMAND ----------
+
+df_senti_c = df
+# Run the pipeline
+pipelineModel = nlpPipeline.fit(df_senti_c)
+
+result = pipelineModel.transform(df_senti_c)
+
+# Get the sentiment
+result = result.withColumn('labels', result.sentiment.result[0]) 
+
+# COMMAND ----------
+
+# Show some of the results
+result.select('labels').show(5)
+
+# COMMAND ----------
+
+result.printSchema()
+
+# COMMAND ----------
+
+# delect unnecessary columns
+result = result.drop('document', 'token','sentence','normalized', 'stop','lemma','stem', 'final', 'tf', 'tfidf', 'sentence_embeddings', 'sentiment')
+
+# COMMAND ----------
+
+result.show()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Identify important keywords for your reddit data and use regex searches, create new variables
+# MAGIC ## Summary statistics and visualizations
 
 # COMMAND ----------
 
-# Use Regex to find submissions that mention different cryptocurrencies
+# Basic summary
+result.groupby('labels').count().show()
+
+# COMMAND ----------
+
+# Filter the rows with null labels
+result = result.filter(result.labels.isNotNull())
+
+# COMMAND ----------
+
+# Two way tables
+result.groupby('labels','crypto_term').count().show()
+
+# COMMAND ----------
+
+result.printSchema()
+
+# COMMAND ----------
 
 
-df = df_sub
+# df = df.withColumn('crypto_term', when(df.text.rlike('(?i)pow'), 'pow')
+#                                    .when(df.text.rlike('(?i)fork'), 'fork')
+#                                    .when(df.text.rlike('(?i)cryptocurrenc'), 'cryptocurrencies')
+#                                    .otherwise('N/A'))
+# df = df.withColumn('BTC', when(df.text.rlike('(?i)bitcoin|(?i)btc'), 1).otherwise(0))
+# df = df.withColumn('ETH', when(df.text.rlike('(?i)etherium|ETH'), 1).otherwise(0))
+# df = df.withColumn('polygon', when(df.text.rlike('(?i)polygon'), 1).otherwise(0))
+# df = df.withColumn('algorand', when(df.text.rlike('(?i)algorand'), 1).otherwise(0))
+# df = df.withColumn('robinhood', when(df.text.rlike('(?i)robinhood'), 1).otherwise(0))
 
-df = df.withColumn('BTC', when(df.title.rlike('(?i)bitcoin|(?i)btc'), 1).otherwise(0))
-df = df.withColumn('ETH', when(df.title.rlike('(?i)etherium|ETH'), 1).otherwise(0))
-df = df.withColumn('USDT', when(df.title.rlike('(?i)USDT|(?i)tether'), 1).otherwise(0))
-df = df.withColumn('USDC', when(df.title.rlike('(?i)USDC'), 1).otherwise(0))
-df = df.withColumn('BNB', when(df.title.rlike('(?i)BNB'), 1).otherwise(0))
-df = df.withColumn('XRP', when(df.title.rlike('(?i)XRP'), 1).otherwise(0))
-df = df.withColumn('BUSD', when(df.title.rlike('(?i)BUSD|(?i)Binance USD'), 1).otherwise(0))
-df = df.withColumn('ADA', when(df.title.rlike('(?i)cardano|(?i)ADA'), 1).otherwise(0))
-df = df.withColumn('SOL', when(df.title.rlike('(?i)solana|(?i)SOL'), 1).otherwise(0))
-df = df.withColumn('DOG', when(df.title.rlike('(?i)dogecoin|(?i)DOGE'), 1).otherwise(0))
+# COMMAND ----------
 
-df_sml = df.select("BTC","ETH","USDT",'USDC','BNB','XRP','BUSD','ADA','SOL','DOG')
+df_cryptoTerm = result.filter(col('crypto_term') != 'N/A')
+df_pow = result.filter(col('crypto_term') == 'pow')
+df_fork = result.filter(col('crypto_term') == 'fork')
+df_cryptocurrencies = result.filter(col('crypto_term') == 'cryptocurrencies')
+df_BTC = result.filter(col('BTC') == 1)
+df_polygon = result.filter(col('polygon') == 1)
+df_algorand = result.filter(col('algorand') == 1)
+df_robinhood = result.filter(col('robinhood') == 1)
+df_ETH = result.filter(col('ETH') == 1)
 
-res = df_sml.groupBy().sum().collect()
+# COMMAND ----------
+
+# Summary Tables
+cryptoTerm = df_cryptoTerm.groupby('labels').count().sort('labels').toPandas()
+pow = df_pow.groupby('labels').count().sort('labels').toPandas()
+fork = df_fork.groupby('labels').count().sort('labels').toPandas()
+crypto = df_cryptocurrencies.groupby('labels').count().sort('labels').toPandas()
+
+
+# COMMAND ----------
+
+# Summary Tables
+BTC = df_BTC.groupby('labels').count().sort('labels').toPandas()
+
+# COMMAND ----------
+
+polygon = df_polygon.groupby('labels').count().sort('labels').toPandas()
+
+# COMMAND ----------
+
+algorand = df_algorand.groupby('labels').count().sort('labels').toPandas()
+
+# COMMAND ----------
+
+# robin = df_robinhood.groupby('labels').count().sort('labels').toPandas()
+
+# COMMAND ----------
+
+ETH = df_ETH.groupby('labels').count().sort('labels').toPandas()
+
+# COMMAND ----------
+
+cryptoTerm.to_csv('../../data/csv/cryptoTerm.csv')
+pow.to_csv('../../data/csv/pow.csv')
+fork.to_csv('../../data/csv/fork.csv')
+crypto.to_csv('../../data/csv/crypto.csv')
+BTC.to_csv('../../data/csv/BTC.csv')
+polygon.to_csv('../../data/csv/polygon.csv')
+algorand.to_csv('../../data/csv/algorand.csv')
+#robin.to_csv('../../data/csv/robin.csv')
+ETH.to_csv('../../data/csv/ETH.csv')
+
+# COMMAND ----------
+
+# Create subplots: use 'domain' type for Pie subplot
+fig = make_subplots(rows=2, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}], [{'type':'domain'}, {'type':'domain'}]])
+
+labels = ['negative', 'neutral', 'positive']
+
+fig.add_trace(go.Pie(labels=labels, values=cryptoTerm['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="Crypto Terms"),
+              1, 1)
+fig.add_trace(go.Pie(labels=labels, values=pow['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="POW"),
+              1, 2)
+fig.add_trace(go.Pie(labels=labels, values=fork['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="Fork"),
+              2, 1)
+fig.add_trace(go.Pie(labels=labels, values=crypto['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="Cryptocurrencies"),
+              2, 2)
+
+# Use `hole` to create a donut-like pie chart
+fig.update_traces(hole=.4, hoverinfo="label+percent+name")
+
+fig.update_layout(
+    title = {
+        'text': 'The Sentiment Proportion for Common Crytocurrency Terms',
+        'y':0.95,
+        'x':0.48,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    },
+    # Add annotations in the center of the donut pies.
+    annotations=[dict(text='crypto terms', x=0.2, y=0.82, font_size=17, showarrow=False),
+                 dict(text='pow', x=0.81, y=0.82, font_size=17, showarrow=False),
+                 dict(text='fork', x=0.2, y=0.19, font_size=17, showarrow=False),
+                 dict(text='cryptocurrency', x=0.81, y=0.19, font_size=17, showarrow=False)])
+
+fig.write_html('../../images/figure_pies_1.html')
+
+# COMMAND ----------
+
+fig.show()
+
+# COMMAND ----------
+
+# choose four subjects
+fig = make_subplots(rows=2, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}], [{'type':'domain'}, {'type':'domain'}]])
+
+labels = ['negative', 'neutral', 'positive']
+
+fig.add_trace(go.Pie(labels=labels, values=BTC['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="BTC"),
+              1, 1)
+fig.add_trace(go.Pie(labels=labels, values=ETH['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="ETH"),
+              1, 2)
+fig.add_trace(go.Pie(labels=labels, values=polygon['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="Polygon"),
+              2, 1)
+fig.add_trace(go.Pie(labels=labels, values=algorand['count'], marker_colors=['#3D65A5', '#3DA57D', '#F05039'], name="Algorand"),
+              2, 2)
+
+# Use `hole` to create a donut-like pie chart
+fig.update_traces(hole=.4, hoverinfo="label+percent+name")
+
+fig.update_layout(
+    title = {
+        'text': 'The Sentiment Proportion for Common Crytocurrency Terms',
+        'y':0.95,
+        'x':0.48,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    },
+    # Add annotations in the center of the donut pies.
+    annotations=[dict(text='bitcoin', x=0.2, y=0.82, font_size=17, showarrow=False),
+                 dict(text='ethereum', x=0.81, y=0.82, font_size=17, showarrow=False),
+                 dict(text='polygon', x=0.2, y=0.19, font_size=17, showarrow=False),
+                 dict(text='algorand', x=0.81, y=0.19, font_size=17, showarrow=False)])
+
+fig.write_html('../../images/figure_pies_2.html')
+
+# COMMAND ----------
+
+fig.show()
