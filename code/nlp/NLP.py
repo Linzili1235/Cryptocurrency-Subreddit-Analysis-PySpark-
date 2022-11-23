@@ -171,10 +171,6 @@ df_com.printSchema()
 
 # COMMAND ----------
 
-df_bit.head()
-
-# COMMAND ----------
-
 from pyspark.sql.types import IntegerType
 
 # Write a user-defined function to compute the length of list
@@ -471,11 +467,6 @@ df_cleaned_c = pipeline.fit(df_text_c).transform(df_text_c)
 
 # COMMAND ----------
 
-# Save the cleaned dataframe to DBFS
-df_cleaned_c.write.parquet("/FileStore/pipelinedComment")
-
-# COMMAND ----------
-
 df_cleaned_c.printSchema()
 
 # COMMAND ----------
@@ -687,12 +678,25 @@ result = result.filter(result.labels.isNotNull())
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Table 1
+
+# COMMAND ----------
+
 # Two way tables
-result.groupby('labels','crypto_term').count().show()
+table_sentiment = result.groupby('labels','crypto_term').count().sort('count', ascending=False)
+
+# COMMAND ----------
+
+table_sentiment.show()
 
 # COMMAND ----------
 
 result.printSchema()
+
+# COMMAND ----------
+
+result.write.parquet("/FileStore/sentimentcomment")
 
 # COMMAND ----------
 
@@ -751,6 +755,8 @@ ETH = df_ETH.groupby('labels').count().sort('labels').toPandas()
 
 # COMMAND ----------
 
+# DBTITLE 0,Save to csv
+# Save to csv
 cryptoTerm.to_csv('../../data/csv/cryptoTerm.csv')
 pow.to_csv('../../data/csv/pow.csv')
 fork.to_csv('../../data/csv/fork.csv')
@@ -760,6 +766,18 @@ polygon.to_csv('../../data/csv/polygon.csv')
 algorand.to_csv('../../data/csv/algorand.csv')
 #robin.to_csv('../../data/csv/robin.csv')
 ETH.to_csv('../../data/csv/ETH.csv')
+
+# COMMAND ----------
+
+# Load csv
+cryptoTerm = pd.read_csv('../../data/csv/cryptoTerm.csv')
+pow = pd.read_csv('../../data/csv/pow.csv')
+fork = pd.read_csv('../../data/csv/fork.csv')
+crypto = pd.read_csv('../../data/csv/crypto.csv')
+BTC = pd.read_csv('../../data/csv/BTC.csv')
+polygon = pd.read_csv('../../data/csv/polygon.csv')
+algorand = pd.read_csv('../../data/csv/algorand.csv')
+ETH = pd.read_csv('../../data/csv/ETH.csv')
 
 # COMMAND ----------
 
@@ -784,15 +802,17 @@ fig.update_layout(
     title = {
         'text': 'The Sentiment Proportion for Common Crytocurrency Terms',
         'y':0.95,
-        'x':0.48,
+        'x':0.50,
         'xanchor': 'center',
         'yanchor': 'top'
     },
     # Add annotations in the center of the donut pies.
-    annotations=[dict(text='crypto terms', x=0.2, y=0.82, font_size=17, showarrow=False),
+    annotations=[dict(text='jargons', x=0.17, y=0.82, font_size=17, showarrow=False),
                  dict(text='pow', x=0.81, y=0.82, font_size=17, showarrow=False),
-                 dict(text='fork', x=0.2, y=0.19, font_size=17, showarrow=False),
-                 dict(text='cryptocurrency', x=0.81, y=0.19, font_size=17, showarrow=False)])
+                 dict(text='fork', x=0.2, y=0.18, font_size=17, showarrow=False),
+                 dict(text='currency', x=0.85, y=0.18, font_size=17, showarrow=False)],
+    margin=dict(t=50, b=50, l=500, r=500))
+    
 
 fig.write_html('../../images/figure_pies_1.html')
 
@@ -821,9 +841,9 @@ fig.update_traces(hole=.4, hoverinfo="label+percent+name")
 
 fig.update_layout(
     title = {
-        'text': 'The Sentiment Proportion for Common Crytocurrency Terms',
+        'text': 'The Sentiment Proportion for Cryptocurrencies Types and Protocols',
         'y':0.95,
-        'x':0.48,
+        'x':0.50,
         'xanchor': 'center',
         'yanchor': 'top'
     },
@@ -831,10 +851,115 @@ fig.update_layout(
     annotations=[dict(text='bitcoin', x=0.2, y=0.82, font_size=17, showarrow=False),
                  dict(text='ethereum', x=0.81, y=0.82, font_size=17, showarrow=False),
                  dict(text='polygon', x=0.2, y=0.19, font_size=17, showarrow=False),
-                 dict(text='algorand', x=0.81, y=0.19, font_size=17, showarrow=False)])
+                 dict(text='algorand', x=0.81, y=0.19, font_size=17, showarrow=False)],
+    margin=dict(t=50, b=50, l=500, r=500))
 
 fig.write_html('../../images/figure_pies_2.html')
 
 # COMMAND ----------
 
 fig.show()
+
+# COMMAND ----------
+
+df_date = result.groupby('input_timestamp','labels').count().sort('input_timestamp').toPandas()
+
+# COMMAND ----------
+
+df_date1 = df_date.dropna()
+df_date1 = df_date1.rename(columns={"input_timestamp": "Date"})
+df_date1
+
+# COMMAND ----------
+
+data = df_bit.sort_values(by=['Date'])
+data = data[["Date","Bitcoin_Price"]]
+data
+
+# COMMAND ----------
+
+df_merge = pd.merge(df_date1,data,how="outer")
+# df_date1.join(data,on="Date")
+
+# COMMAND ----------
+
+fig = go.Figure(
+    data=[
+        go.Bar(name='Population', x=datasort["country"], y=datasort["population"], yaxis='y', offsetgroup=1),
+        go.Bar(name='GDP per Capita', x=datasort["country"], y=datasort["gdpPerCapita"], yaxis='y2', offsetgroup=2)
+    ],
+    layout={
+        'yaxis': {'title': 'Population (in Billions) '},
+        'yaxis2': {'title': 'GDP per Capita (in Millions)', 'overlaying': 'y', 'side': 'right'}
+    }
+)
+ 
+# Change the bar mode
+fig.update_layout(barmode='group')
+fig.show()
+
+# COMMAND ----------
+
+fig = make_subplots(specs=[[{"secondary_y": True}]])
+trace1 = go.Scatter(x = df_merge["Date"],
+                   y = df_merge["Bitcoin_Price"],
+                   name="Bitcoin Price",
+                   yaxis='y2')
+trace2 = go.Bar(x=df_merge["labels"], y =df_merge["count"])
+#                barmode = "group")
+
+# trace2 = go.Bar(x = df_merge["labels"],
+#                y = df_merge["count"],
+#                name="sentiment")
+layout = go.Layout(barmode = "group")
+trace2 = go.Figure(data=trace2,layout = layout)
+trace2.show()
+# fig.add_trace(trace1,secondary_y=False)
+# # fig.add_trace(trace2,secondary_y=True)
+# fig.show()
+#,name='bitcoin price'
+#,name='sentiment count'
+
+# COMMAND ----------
+
+labels = df_merge["Date"]
+positive = df_merge[df_merge["labels"] == "positive"]["count"]
+negative = df_merge[df_merge["labels"] == "negative"]["count"]
+neutral = df_merge[df_merge["labels"] == "neutral"]["count"]
+
+x = np.arange(len(labels))
+width = 0.1
+
+fig, ax = plt.subplots()
+ax2 = ax.twinx()
+rec1 = ax.bar(x - width/3, positive, width, label = "positive")
+rec2 = ax.bar(x, negative, width, label  = "negative")
+rec3 = ax.bar(x + width/3, neutral, width, label = "neutral")
+
+# Add some text for labels, title and custom x-axis tick labels, etc.
+ax.set_ylabel('Sentiment Frequency')
+ax.set_title('Sentiment Changes with Bitcoin Prices')
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+
+
+def autolabel(rects):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 3, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+autolabel(rec1)
+autolabel(rec2)
+autolabel(rec3)
+
+ax2.plot(df_merge["Date"],df_merge["Bitcoin_Price"],color="seagreen",label="bitcoin price")
+ax2.set_ylabel("Bitcoin Price")
+
+fig.show()
+
+
