@@ -8,11 +8,11 @@ The code to build the website will be in the `website-source/` directory.
 
 The website must have the following structure:
 
-* Landing and project description page - website/index.html (keep empty)
-* Exploratory data analysis page - website/eda.html - (keep empty)
+* Landing and project description page - website/index.html - You are populating this site during the final submission
+* Exploratory data analysis page - website/eda.html - You are populating this site during the final submission
 * NLP page - website/nlp.html - You are populating this site during milestone 2
-* ML page  - website/ml.html - (keep empty)
-* Conclusion page - website/conclusion.html - (keep empty)
+* ML page  - website/ml.html - You are populating this site during milestone 3
+* Conclusion page - website/conclusion.html - You are populating this site during the final submission
 
 
 ## Requirements
