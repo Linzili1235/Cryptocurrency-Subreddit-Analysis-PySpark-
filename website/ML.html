@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html class="bg" lang="en">
+<style>
+h1 {padding-left:10px;}
+p {
+    padding-left:10px;
+    font-size: 20px;
+}
+td {padding-left:10px;}
+table tr th, table tr td{border:1px solid black;}
+body {background: #DEFEFD;}
+li a, .dropbtn {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: #BFEFFF;
+}
+li.dropdown {
+    display: block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+}
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+.dropdown-content a:hover {background-color: #BFEFFF}
+.dropdown:hover .dropdown-content {
+    display: block;
+}ck;}
+
+</style>
+<head>
+	<title>ML</title>
+	<meta charset="utf-8" />
+	<link href="../website-source/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<link rel="stylesheet" type="text/css" href="../website-source/style.css">
+	<link rel="stylesheet" type="text/css" href="../website-source/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+	<div class="navs container">
+			<nav class="navbar navbar-default col-md-12 col-xs-12" >
+			    <div class="container-fluid"> 
+			    <div class="navbar-header">
+			        <button type="button" class="navbar-toggle" data-toggle="collapse"
+			                data-target="#example-navbar-collapse"> 502 project
+			            <span class="sr-only"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			        </button>
+			        <a class="navbar-brand" href="#"><span>Cryptocurrency Analysis</span></a>
+			    </div>
+			    <div class="collapse navbar-collapse" id="example-navbar-collapse">
+			        <ul class="nav navbar-nav">
+			            <li><a href="index.html">Home</a></li>
+			            <li><a href="eda.html"> EDA</a></li>
+			            <li><a href="NLP.html">NLP</a></li>
+			            <li><a href="ML.html" class="active"> ML</a></li>
+			            <li><a href="Conclusions.html">Conclusions</a></li>
+			        </ul>
+			    </div>
+			    </div>
+			</nav>
+			
+	</div>
+    <div>
+		<a href="javaScript:;"><img src="../images/ml.jpg" class="imga" alt="c"></a>
+	</div>
+	<div class="container ways">
+		<div class="tit">
+			<h2> Executive Summary </h2>
+		</div>
+		<div class="row ">
+			<div class="col-xs-12">
+			  <center><p><a href="../code/nlp/NLP.py" class="btn btn-info">NLP Code Here</a></center>
+			  
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>We managed to classify Reddit comments into different sub-communities in the Cryptocurrency subreddit with good accuracy. With this functionality implemented, the system will be able to label each comment with appropriate tags, saving users time to pick and choose themselves.This tag recommendation system about comment is something that reddit does not have at the moment. In addition, we plan to further improve our model, so that it would suggest which subreddit a comment better belongs to, providing more interactions among related subreddits.
+</li></ul>
+
+
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>We also succeeded in predicting whether a comment in the Cryptocurrency subreddit is controversial or not. This functionality could be integrated into Reddit in such a way that if a comment is determined to be highly controversial, the comment would be blurred at first. A notice similar to “viewer discretion advised” would appear and the user would have to confirm it to view the specific comment. To achieve this, the model needs to be strengthened such that it would classify controversiality into different degrees. 
+</li></ul>
+	      
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	<div class="container ways">
+		<div class="tit">
+			<h2>Analysis Report of Machine Learning Problems</h2>
+		</div>
+		<div class="row ">
+			<div class="col-xs-12">
+			 <p><a href="../code/ml/ML.py" class="btn btn-info">ML Code Here</a>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal:</h2>
+				<p>We want to predict the sub-community a comment in the cryptocurrency subreddit belongs to.</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>Technical proposal: Based on the user's theme, we recommend what subreddit theme is suitable for him. Build a Naive Bayes model to determine the user's topic, and finally, use the model to suggest his own suitable topic for the new post.!!!! Using word embedding to vectorize the comments. Implement RNN and LSTM to predict the label and compare their performances in terms of prediction accuracy. </p>
+				
+			<div class="col-xs-12">
+				<h2>Summary Table of Models</h2>
+        <div class="w1 text-center">
+           <table width="100%" style="border-collapse:collapse;">
+              <tr>
+                  <th style="font-size:24px;padding:5px;">Model 1: Logistic Regressin</th>
+                  <th style="font-size:24px;padding:5px;">Model 2: Decision Tree1</th>
+                  <th style="font-size:24px;padding:5px;">Model 3: Decision Tree2</th>
+              </tr>
+              <tr valign="center" halign="center">
+                  <td width="30%" style="text-align:center;padding:10px;">
+                    <img src="../images/cm1.png" alt="French" width=390px height=205px>
+                    <br>Figure1: Confusion Matrix of Logistic Regression
+                  </td>
+                  <td width="30%" style="text-align:center;padding:10px;">
+                    <img src="../images/cm2.png" alt="French" width=390px height=205px>
+                    <br>Figure: Confusion Matrix of Decision Tree Max Depth=3
+                  </td>
+                  <td width="30%" style="text-align:center;padding:10px;">
+                    <img src="../images/cm3.png" alt="French" width=390px height=205px>
+                    <br>Figure: Confusion Matrix of Decision Tree Max Depth=5
+                  </td>
+              </tr>
+              
+            </table>
+				</div>
+			</div>
+
+				<p> 
+				    We initially wanted to construct a model that could predict which subreddit a comment should be placed under. However, we later decided to focus on the subreddit Cryptocurrency. Therefore, we established a model that classifies a comment based on several dummy variables (pow, fork, btc, eth, etc.) that represent different cryptocurrency sub-communities. First, we remove all the rows of N/A. Afterward, these labels are transformed into indexes (to facilitate the modeling later).</br>
+<br>
+In the modeling phase, we built different models and parameters by going through the pipeline for multiple modeling sessions. We tokenized the text, removed stopwords, and vectorized them with CountVectorizer. After that, the project established two classification models (logistic regression, Decision tree (maxdepth = 3 & 5)).</br>
+
+
+				</p>
+				
+			</div>
+			<div>
+			  <center><img src="../images/comparision1.png" alt="French" width=300px height=205px>
+				<br>Figure: Comparision of Models</center>
+			</div>
+			<div>
+			  <p>The accuracy of the models is unexpectedly high. The accuracy of both models falls in the upper 90% range. The logistic regression has a higher accuracy of 98%. It makes sense as our data mainly consist of dummy variables, which means that the data is linearly separable. However, since the majority of our attributes are categorical, the Decision Tree model should dominate in this case. The main reason why Logistic Regression outperforms Decision Tree in our project is that our categories are highly skewed. In the meantime, we cut off the branches and didn’t let the Decision Tree grow fully, which reduced its accuracy.
+			    
+			  </p>
+			</div>
+		</div>
+		<div class="row ">
+			<div class="col-xs-12">
+			  <p><a href="../code/ml/ML2.py" class="btn btn-info">ML Code Here</a>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal:</h2>
+				<p>We want to help Reddit to find out whether a cryptocurrency’s comment is controversial or not.</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>First, properly choose important and distinct variables that can be used to predict controversial variables(dummy variable). And then utilize regression and clustering algorithms to predict the values of controversial variables. Finally, compare the real variables and predicted variables and get the algorithm prediction accuracy and find out whether the algorithm can be put into real-world implementation.</p>
+			</div>
+			<div class="col-xs-12">
+				<center><a href="../images/figure_con_roc.html" target="_blank"> <iframe src="../images/figure_con_roc.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure:ROC for Controversiality Classification
+			</div>
+			<div>
+			  <p>
+			    To investigate the topic, we implemented Random Forest, Gradient Boosted Tree Classifier, and Logistics Regression (with/without PCA). Before applying the model, raw data was put through a pipeline of transformations. A String Indexer was applied to categorical variables to convert textual data to numerical data while keeping the categorical context. A new Time attribute was generated by One-Hot-Encoding Hour, Day, and Month columns and merging them into one vector utilizing Vector Assembler. In particular, for Logistic Regression, we used a Robust Scaler as an additional step in the data preprocessing process to standardize the data, making it robust to outliers. Moreover, since our data is rather imbalanced (63:1), weights are applied to minimize the imbalance. The weight for each category is calculated based on the equation below.
+
+			  </p>
+			   <center><img src="../images/fuction.png" alt="French" width=100px height=50px></center>
+			  <p>
+			    
+Where C is the number of classes (in our case C = 2), i is the index of each class, and n is the total number of observations.
+
+			  </p>
+			</div>
+			<div>
+			  <center><img src="../images/comparision2.png" alt="French" width=300px height=205px>
+				<br>Figure: Comparision of Models</center>
+			  <p>
+			     A performance comparison across all models is shown below. Among all the models, the Random Forest model has the best performance. The prediction accuracy is 93% with an MSE value of 0.071. The Gradient boosted tree classifier (GBT) has an accuracy of 88% with an MSE value of 0.12. Lastly, the Logistic Regression model with PCA produces an accuracy of 49% and an MSE value of 0.52. Surprisingly, the Logistic Regression model alone has a slightly higher prediction accuracy of 58% and an MSE value of 0.42. We reckon that the reason why Logistic Regression with PCA being outperformed by stand-alone Logistic Regression is the low correlations between attributes, thus low redundancy in the data, resulting in lost information when PCA reduces its dimensionality.
+			  </p>
+			 
+			</div>
+		</div>
+		</div>
+	</div>
+	
+	  <!-- footer -->
+	<div class="footer">
+		<div class="container">
+			<div class="row ft">
+				<div class="col-md-12 col-xs-12">
+					<h4>Contact us</h4>
+					<p>Changwen Li/ cl1479@georgetown.edu  / (315)960-6666</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+
+    <script src="../website-source/bootstrap.min.js"></script>
+</body>
+</html>
