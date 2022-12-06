@@ -722,3 +722,16 @@ fig.update_layout(
 # COMMAND ----------
 
 fig.write_html('../../images/figure_con_roc.html')
+
+# COMMAND ----------
+
+dic1 = {'Model':['random forest 1','random forest 2','gradient boost tree 1','gradient boost tree 2','logistic regression 1','logistic regression 2'],
+       'Accuracy':[0.92851,0.92074,0.89538,0.88064,0.48463,0.57792],
+       'MSE':[0.07148,0.07925,0.10461,0.11935,0.51536,0.42207],
+       'VAR':[0.70077,0.07794,0.10339,0.11800,0.50274,0.41235]}
+
+# COMMAND ----------
+
+new = pd.DataFrame.from_dict(dic1)
+  
+new

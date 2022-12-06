@@ -312,7 +312,7 @@ idf = IDF(inputCol='rawFeatures',outputCol='vectorizedFeatures')
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### Model 2: Logistic Regression
+# MAGIC #### Model 1: Logistic Regression
 
 # COMMAND ----------
 
@@ -357,6 +357,10 @@ print("Var = %g" % var_lr)
 
 # COMMAND ----------
 
+
+
+# COMMAND ----------
+
 y_pred=predictions1.select("prediction").collect()
 y_orig=predictions1.select("label").collect()
 cm = confusion_matrix(y_orig, y_pred)
@@ -373,7 +377,7 @@ ax.set_ylabel('Label')
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Model 3: DecisionTree with maxDepth=3 & maxDepth=5
+# MAGIC ### Model 2&3: DecisionTree with maxDepth=3 & maxDepth=5
 
 # COMMAND ----------
 
@@ -496,3 +500,16 @@ sns.heatmap(cm,annot=True,ax=ax)
 ax.set_title('confusion matrix') 
 ax.set_xlabel('Prediction')
 ax.set_ylabel('Label')
+
+# COMMAND ----------
+
+dic1 = {'Model':['logistic regression','decision tree 1','decision tree 2'],
+       'Accuracy':[0.988981,0.893128,0.915337],
+       'MSE':[0.0503525,0.0503525,0.400393],
+       'VAR':[0.953362,0.953362,0.604116]}
+
+# COMMAND ----------
+
+new = pd.DataFrame.from_dict(dic1)
+  
+new
