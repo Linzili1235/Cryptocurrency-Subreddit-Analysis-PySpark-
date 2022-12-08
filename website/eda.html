@@ -92,11 +92,11 @@ li.dropdown {
 			<div class="col-xs-12">
 			  <center><p><a href="../website/EDA_code.html" class="btn btn-info">EDA Code Here</a></center>
 			  
-				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>From the general perspective, the number of people’s submissions peaked on Feb 21, May/Jun 21, Aug/Seg 21 and Dec 21, and then slowly decreased. To be more specific, people don’t have strong intentions to post on a particular day during the week, but they may have the preference to make more discussions after work on Thursday and spend less time on topics about cryptocurrency during weekends. Among the posted submissions about cryptocurrency, the top 5 cryptocurrencies are Bitcoin, Ethereum, Dogecoin, Cardano and Solana. 
 </li></ul>
 
 
-				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>We also find out the relationships between the submission's features “gilded”, “score” and “word count”. Submissions about cryptocurrency receive great responses in general as most of the submissions get a significant amount of upvotes. By comparison, gilded submissions tend to have higher scores than ungilded submissions. Moreover, it seems that submissions with a word count between 5-20 could receive higher scores than others.
 </li></ul>
 	      
 			</div>
@@ -114,6 +114,10 @@ li.dropdown {
 				<h2> 1. Data Ingestion</h2>
 				<p>
 				  The dataset we use is Reddit Archive data from January 2021 through the end of August 2022, representing about 8TB of uncompressed text JSON data which have been converted to two parquet files (about 1TB): submissions, and comments. In our project, we will mainly use the data of the subreddit Cryptocurrency. 
+
+				</p>
+				<p>
+				  The external dataset we used is Bitcoin price from January 2021 to December 2022 obtained from investing.com. The data has 7 attributes including date, average price, open price, daily high, daily low, total transaction volume, and change%. The dataset is in the format of .csv and has 670 rows. 
 
 				</p>
 			</div>
@@ -183,8 +187,18 @@ li.dropdown {
         </tr>
     </table>
 				</div>
-			</div>
-		</div>
+			  <div class = 'container'>
+			    <center>
+			    <img src="../images/eda_table1.png" >
+			    <img src="../images/eda_table2.png" >
+			    <br> Table 1 & 2: Table of Dummy Variables
+			    </center>
+			    <p>
+			      These tables are designed to find the number of submission counts of specific times. The first table has 7 dummy variables Monday to Sunday, and the second is divided into three three dummy variables based on three time periods 0:00 am- 7:59 am (Sleep), 8:00 am-15:59 pm (working time), and 16:00 pm-23:59 pm(Afterwork).
+			    </p>
+			  </div>
+			 </div>
+		
 	<div class="container ways">
 		<div class="row ">
 			<div class="col-xs-12">
@@ -196,23 +210,40 @@ li.dropdown {
 			</div>
 			<div class="col-xs-12">
 				<center><a href="../images/figure_line_eda.html" target="_blank"> <iframe src="../images/figure_line_eda.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
-				<br>Figure:Count of Cryptocurrency Subreddit Submissions Over Time</center>
+				<br>Figure 1:Count of Cryptocurrency Subreddit Submissions Over Time</center>
 				<p>
 				  The graph is about the count of the cryptocurrency subreddit submissions over time from January 2021 to August 2022. The line plot shows that there are several significant spikes in the number of posts during Feb 21, May/Jun 21, Aug/Sep 21, and Dec 21. However, the number of posts has been declining since then. To investigate the probable reason behind this decrease in activity, we plan to incorporate external data on the price of cryptocurrencies and determine if there is any correlation between market price of cryptocurrencies and their reddit popularity. 
 				</p>
 			</div>
 		<div class="col-xs-12">
 				<center><a href="../images/fig_2.html" target="_blank"> <iframe src="../images/fig_2.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
-				<br>Figure:Number of Submissions for Different Cryptocurrencies</center>
+				<br>Figure 2:Number of Submissions for Different Cryptocurrencies</center>
 				<br><p>
 				  The image shows a histogram of the number of submissions owned by each type of cryptocurrencies. The x-axis represents the type of cryptocurrency, and y represents the counts of submissions. As you can see from the graph, the most submissions come from btc, with the number checking over 80k. From the above bar chart, we found the top 5 mentioned cryptocurrencies are Bitcoin(BTC), ETH(Ethereum), Dogecoin(DOGE), Cardano(ADA), and Solana(SOL).
 				</p>
 			</div>
 		</div>
+		
+	<div class="row ">
+			<div class="col-xs-12">
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 2:</h2>
+				<p>EDA: When are people more willing to talk about cryptocurrency one day(during work hours or after-work hours)? Or What time period is the cryptocurrency discussion more heated?</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>Technical proposal: Explore the daily activity of subreddits and determine when is Reddit the most active throughout a week. Create three dummy variables during three time periods 0:00 am- 7:59 am (Sleep), 8:00 am-15:59 pm (working time), and 16:00 pm-23:59 pm(Afterwork).</p>
+			</div>
+			<div class="col-xs-12">
+				<center><a href="../images/fig_3.html" target="_blank"> <iframe src="../images/fig_3.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure 3:Number of Submissions by Day of A Week towards Three Periods</center>
+				<p>
+				 The line chart is about the number of submissions by day of a week towards three periods of one day. In this figure, the top line represents the number of submissions during the after-work period that shows people are most active during the after-work time, whatever in any day of week. Also, there is a peak on Thursday so that people like to talk about cryptocurrency on Thursday. Since there is a big drop during weekends time, we guess cryptocurrency is not a popular topic in spare time.
+				</p>
+			</div>
+		</div>
+		
 			
 		<div class="row ">
 			<div class="col-xs-12">
-				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 2:</h2>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 3:</h2>
 				<p>EDA: Whether the cryptocurrency-related discussions are highly rated on Reddit, can we trust the labels given by Reddit such as gilded?</p>
 				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
 				<p>Determine the distribution of scores (upvotes - downvotes) for cryptocurrency subreddit submissions by distinguished and gilded variables. Produce a violine plot to visualize the distribution. Find the basic distribution statistics and check whether cryptocurrency subreddits are highly rated.</p>
@@ -220,28 +251,12 @@ li.dropdown {
 			
 			<div class="col-xs-12">
 				<center><a href="../images/fig_violin.html" target="_blank"> <iframe src="../images/fig_violin.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
-				<br>Figure:The Distribution of CryptoCurrency Submission Scores Based on Gilded</center>
+				<br>Figure 4:The Distribution of CryptoCurrency Submission Scores Based on Gilded</center>
 				<p>
 				  The figure is the distribution of cryptocurrency subreddit scores based on gilded. The x represents whether the submission is gilded, and y indicates the score of subreddit scores. From the distribution plot, we could notice the score of cryptocurrency discussions can go up to 5000, which means that most of the cryptocurrency submissions are highly rated. In the meanwhile, if we compare the gilded submissions and ungilded submissions, we can find that the gilded submissions have higher scores than ungilded submissions.
 				</p>
 			</div>
 		</div>
-		<div class="row ">
-			<div class="col-xs-12">
-				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 3:</h2>
-				<p>EDA: When are people more willing to talk about cryptocurrency one day(during work hours or after-work hours)? Or What time period is the cryptocurrency discussion more heated?</p>
-				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
-				<p>Technical proposal: Explore the daily activity of subreddits and determine when is Reddit the most active throughout a week. Create three dummy variables during three time periods 0:00 am- 7:59 am (Sleep), 8:00 am-15:59 pm (working time), and 16:00 pm-23:59 pm(Afterwork).</p>
-			</div>
-			<div class="col-xs-12">
-				<center><a href="../images/fig_3.html" target="_blank"> <iframe src="../images/fig_3.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
-				<br>Figure:Number of Submissions by Day of A Week towards Three Periods</center>
-				<p>
-				 The line chart is about the number of submissions by day of a week towards three periods of one day. In this figure, the top line represents the number of submissions during the after-work period that shows people are most active during the after-work time, whatever in any day of week. Also, there is a peak on Thursday so that people like to talk about cryptocurrency on Thursday. Since there is a big drop during weekends time, we guess cryptocurrency is not a popular topic in spare time.
-				</p>
-			</div>
-		</div>
-		
 		<div class="row ">
 			<div class="col-xs-12">
 				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 4:</h2>
@@ -251,7 +266,7 @@ li.dropdown {
 			</div>
 		<div class="col-xs-12">
 				<center><a href="../images/fig_5.html" target="_blank"> <iframe src="../images/fig_5.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
-				<br>Figure:Words Count for High Score</center>
+				<br>Figure 5:Words Count for High Score</center>
 				<p>
 				This image is the distribution of words counted for high scores. The x-axis is the word count, and y-axis represents the score. This graph clearly expresses how many words there are in the high scoring post of reddit. It is interesting to note that the higher the score, the more posts tend to use few words to describe their problems. 
 				</p>

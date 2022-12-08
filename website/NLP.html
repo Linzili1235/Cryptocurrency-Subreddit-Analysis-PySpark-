@@ -104,7 +104,7 @@ li.dropdown {
 	
 	<div class="container ways">
 		<div class="tit">
-			<h2> Basic Information of data and external data</h2>
+			<h2> Basic Information of Data and External Data</h2>
 		</div>
 		<div class="row ">
 			<div class="col-xs-12">
@@ -112,6 +112,7 @@ li.dropdown {
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Submission</li></ul>
 				<div class="w1 text-center">
 					<a href="../images/fig_distr_Submission.html" target="_blank"> <iframe src="../images/fig_distr_Submission.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+					<br> Figure 1: Distribution of Length of Titles for Submissions
 				</div>
 				<p>
 				    The figure shows that the length of the title in the submission is concentrated between 3 and 12 words. Among them, the titles with length of 3 are the most common. There are only a few titles with lengths greater than 25 words. This shows that people prefer to describe cryptocurrencies with short and superb titles. Using concise and clear headlines attracts readers' interest in reading more.
@@ -119,16 +120,18 @@ li.dropdown {
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Comment</li></ul>
         <div class="w1 text-center">
 						<a href="../images/fig_distr_Comment.html" target="_blank"> <iframe src="../images/fig_distr_Comment.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+						<br> Figure 2: Distribution of Length of Texts for Comments
 				</div>
 				<p>
 				   The distribution of text length is mainly concentrated below 20 words count. Texts within a few words account for the majority. The frequency of occurrence decreases as the length of the text increases. Similarly, in comments, people are more inclined to evaluate the topic in short words. 
 				</p>
 			</div>
 			<div class="col-xs-12">
-				<h2> 2. Basic information of external data</h2>
+				<h2> 2. Basic Information of External Data</h2>
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Distribution of Bitcoin Price</li></ul>
 				<div class="w1 text-center">
 					<a href="../images/figure_distri_BTC.html" target="_blank"> <iframe src="../images/figure_distri_BTC.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+					<br> Figure 3: Distribution of Bitcoin Price
 				</div>
 				<p>
 				    The bitcoin distribution chart shows that from January 2021 to August 2022, the bitcoin price range is mainly concentrated in the range of 30k to 50k. A few obvious peaks in bitcoin prices are 20k, 40k, and 50k. Low counts occur in the range 25k to 30k, indicating that the bitcoin price rises quickly in this range and reaches new price heights directly. 
@@ -136,6 +139,7 @@ li.dropdown {
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Price of Bitcion($) Over Time</li></ul>
         <div class="w1 text-center">
 						<a href="../images/figure_line.html" target="_blank"> <iframe src="../images/figure_line.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+						<br> Figure 4: Price of Bitcoin($) Over Time
 				</div>
 				<p>
 				   In the bitcoin price and time graph, the price shows an upward trend in the first quarter, however, it declines in May 2021, one of the reasons for the decline is the pressure from China on the industry and the ban on trading with cryptocurrencies. The price then picks up and peaks in November 2021 at around 67.527k. As inflation spikes, the central government curbs the price increase and the bitcoin price trends downward. (Reference: https://www.bankrate.com/investing/bitcoin-price-history/)
@@ -149,8 +153,8 @@ li.dropdown {
               </tr>
               <tr valign="center" halign="center">
                   <td width="30%" style="text-align:center;padding:10px;">
-                    <img src="../images/tf.png" alt="French" width=390px height=205px>
-                    <br>Table: Tf Idf Table of Comments
+                    <img src="../images/tf.png" alt="French" width=500px height=500px>
+                    <br>Table 1: Tf Idf Table of Comments
                   </td>
                   <td width="40%" style="text-align:left;padding:10px;">
                     The table has two columns of data, one with the words and one with the tfidf values. According to the TF-IDF table, the most important words are “pow”, “fort”, “art”, “polygon”, and “pop”. High-related vocabulary includes coins of cryptocurrencies, related protocols, and technical terms. 
@@ -158,8 +162,8 @@ li.dropdown {
               </tr>
               <tr valign="center" halign="center">
                   <td width="30%" style="text-align:center;padding:10px;">
-                    <img src="../images/sentiment.png" alt="French" width=390px height=205px>
-                    <br>Table: Summary Statistic of Sentiment Model
+                    <img src="../images/sentiment.png" alt="French" width=300px height=300px>
+                    <br>Table 2: Summary Statistic of Sentiment Model
                   </td>
                   <td width="40%" style="text-align:left;padding:10px;">
                     The table has 2 columns: labels and count. The label includes four types: positive, null, neutral, and negative. Most frequently used labels are positive. Null value will be removed in later works because this kind of sentiment is meaningless and accounts for little data. From the table, it indicates people have an overall positive sentiment towards virtual currencies. 
@@ -167,8 +171,8 @@ li.dropdown {
               </tr>
               <tr valign="center" halign="center">
                   <td width="30%" style="text-align:center;padding:10px;">
-                    <img src="../images/sentiment_l.png" alt="French" width=390px height=205px>
-                    <br>Table: Sentiment Table towards Words
+                    <img src="../images/sentiment_l.png" alt="French" width=500px height=500px>
+                    <br>Table 3: Sentiment Table towards Words
                   </td>
                   <td width="40%" style="text-align:left;padding:10px;">
                     This is a table containing three columns: labels, crypto-term, and count. Labels are divided into three categories, positive, neutral and negative. According to the type of cryptocurrency(crypto-term), the number of different labels of each species is derived. The most numerous counts do not have a corresponding crypto-term, but it is still evident that positive emotions are much higher than negative and neutral emotions. For the term cryptocurrencies, the negative label is about twice as high as the positive label. Besides, pow, fork have more positive counts than negative.
@@ -192,14 +196,16 @@ li.dropdown {
 				<p>First split the sentences into words, stem, and delete stopwords. Then for submissions, count the frequency of words in the topics. For comments, use CountVectorizer to count the number of words with real meanings. Finally, use TF-IDF to find the words’ importance and extract the most important words. </p>
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Submission</li></ul>
 				<div class="w1 text-center">
-					<img src="../images/sub.png" alt="French" width=375px height=500px>
+					<img src="../images/sub.png" alt="French" width=700px height=700px>
+					<br> Figure 5: Wordcloud
 				</div>
 				<p>
 				    From the wordcloud on the most common words in the submission topics, we can see that users who post the Reddit submissions under cryptocurrency have significant concerns about topics such as "bitcoin","cryptocurrencies","eth" and so on. Although with the popularity of different cryptocurrencies in recent years, such as Dogecoin, Ethereum, Bitcoin still attracts extensive attention from the public. From the most common words shown above, the main purpose of users posting the submissions is to buy, invest, and sell cryptocurrencies since words like "price","market", "wallet" are of great amount in the topics. 
 				</p>
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Comment</li></ul>
         <div class="w1 text-center">
-					<img src="../images/com.png" alt="French" width=375px height=500px>
+					<img src="../images/com.png" alt="French" width=700px height=700px>
+					<br> Figure 6: Wordcloud
 				</div>
 				<p>
 				    From the wordcloud on the most important words of the comment body, we can find that users who comment under the topic of cryptocurrency are likely to bring up words such as "pow","fork","pop" and so on. Different from the users who come up with the question about the prices of cryptocurrencies in the submissions, commenters tend to give replies in a more professional way, such as discussing about different protocols and crypto terminologies like PoW, Algorand, and Polygon. Just as the "art" shown in the wordcloud, in about 20 words (see from the distribution of the comments from cryptocurrency, the majority of comment length lies below 20), commenters describe cryptocurrencies as arts while the question posters see them as products with values.
@@ -215,11 +221,13 @@ li.dropdown {
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Cryptocurrency Terms</li></ul>
 				<div class="w1 text-center">
 				<a href="../images/figure_pies_1.html" target="_blank"> <iframe src="../images/figure_pies_1.html" height="500" width="1300" title="Iframe Example" style='border:none'></iframe></a>
+				<br> Figure 7: The Sentiment Proportion for Common Cryptocurrency Terms
 				</div>
 				<p>Based on the sentiment analysis on Reddit comments, we were able to obtain people’s attitudes (positive/neutral/negative) on various important concepts and terminologies related to cryptocurrency, based on the assumption that a sentence containing a keyword will also be discussing that keyword.  To better understand how people’s attitudes are divided, we selected a few keywords according to their importance ranking based on TF-IDF. From the pie charts, we can see that comments are generally positive towards “PoW” and “fork”. PoW stands for Proof of Work, which refers to a form of cryptographic proof in which one party proves to others that a certain amount of a specific computational effort has been expended. On the other hand, Fork is a technical phenomenon that occurs when a blockchain splits into two separate branches whenever a community makes a change to the blockchain’s protocol or basic set of rules. Surprisingly, the majority of comments are negative towards the general term “cryptocurrency”. “Jargon”, which is a composite category that combines the results of the previous three keywords shows a slightly negative attitude, mostly due to the negative attitude towards “cryptocurrency” in general. We reckon that people associate negative emotions with “cryptocurrency” because conversations related to this topic are highly likely to involve discussion of trading and currency price, which is quite volatile and may lead to dissatisfaction. </p>
 				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Cryptocurrencies and Protocols</li></ul>
 				<div class="w1 text-center">
 				<a href="../images/figure_pies_2.html" target="_blank"> <iframe src="../images/figure_pies_2.html" height="500" width="1300" title="Iframe Example" style='border:none'></iframe></a>
+				<br> Figure 8: The Sentiment Proportion for Cryptocurrencies and Protocols
 				</div>
 				<p>
 				  We also selected a few keywords about digital currency titles and protocols with high importance based on TF-IDF. Apparently, comments are mostly positive about Bitcoin and Ethereum, which indicates that the two digital currencies are going quite strong over the last year. Moreover, the majority of comments are also positive towards protocols such as Polygon and Algorand, which suggests that people are confident and optimistic about the technology. 
@@ -234,6 +242,7 @@ li.dropdown {
 				<p>Use NLP to identify posts that mention bitcoins, or look at future forms of bitcoins. Perform sentiment analysis on posts and assign a positive or negative value to each post. Then count the net positive sentiment of posts for each day. Plot the net positive sentiments and bitcoin prices to see the correlation between them. To determine the market development potential of bitcoin as an emerging virtual currency.</p>
 				<div class="w1 text-center">
 				<a href="../images/figure_question3.html" target="_blank"> <iframe src="../images/figure_question3.html" height="500" width="1300" title="Iframe Example" style='border:none'></iframe></a>
+				<br> Figure 9: Sentiment Changes with Bitcoin Prices
 				</div>
 				<p> Through sentiment analysis and comparing its result with Bitcoin price from January 2021 to August 2022, we found that the number of net positive comments (number of positive comments - number of negative comments) is correlated with Bitcoin price as the characteristics of the price change are well captured. Based on the plot, we can see that before November 2021, the peaks in the number of net positive comments coincide with significant changes in Bitcoin price. Namely, during March and September 2021, the Bitcoin price was soaring, and so did the number of net positive comments. Also, in May 2021, as the Bitcoin price plunged, the number of net positive comments reached its all-time peak. This correlation could be justified since when an investment market such as Bitcoin experiences great fluctuations, it is reasonable that people are discussing it more as their investment might be at stake. Furthermore, a price increase doesn’t guarantee any profit, and neither does a price decrease guarantee any loss. So, as the outcome depends on the investment strategy, the fact that there will be winners and losers in the market at all times leads to synchronized trends in the number of net positive and negative comments.  </p>
 				<p>However, the narrative seems to have changed since November 2021. Both the number of positive and negative comments decreased significantly as the price of Bitcoin also fell precipitously. Normally, as the price plunges, the number of comments should increase, but it is not been observed from November 2021 and on. We reckon that it is because people were gradually losing faith in Bitcoin as the prospect of rising interest rates and reduced liquidity in the financial markets have dropped Bitcoin’s price to an all-time low.

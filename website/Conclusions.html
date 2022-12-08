@@ -92,63 +92,49 @@ li.dropdown {
 		</div>
 		<div class="row">
 			<div class="col-xs-12 col-md-7 left">
-				<p>We will mainly study the data under the subreddit 'CryptoCurrency'</p>
+			  <ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>What we have done so far?</li></ul>
+				<p>In this project, we focused on one subreddit of our interest, Cryptocurrency, as it is one of the most highly discussed and controversial topics in the technological field. Through analysis of word importance, it is surprising that people’s discussion about cryptocurrency on Reddit is much more technical than we initially expected as we come across jargon such as PoW (proof of work), fork, and POP network frequently. Apparently, people are comfortable using Reddit as a platform to conduct in-depth technical conversations. Moreover, based on sentiment analysis, we found that the majority of people are quite positive towards popular cryptocurrency titles such as Bitcoin and Ethereum as well as protocols such as Polygon and Algorand, indicating that people who are interested in cryptocurrency are confident and optimistic about this new technology. However, data on Bitcoin shows that the hype for cryptocurrencies can be really transient. Before November 2021, Bitcoin often led to heated discussions in the subreddit when price underwent drastic changes, but soon after, fewer and fewer people were discussing Bitcoin on Reddit as Bitcoin’s price dropped to an all-time low in May 2022. It suggests that a considerable amount of people had lost faith in the crypto and probably withdrawn from the market. 
+</p>
+<p>Furthermore, we established two machine learning models: one (model 1) that creates tags for Reddit comments to classify them into different sub-communities of cryptocurrency, and another one (model 2) that determines whether a comment is controversial or not based on features such as the time of post, score, whether it is distinguished/gilded, etc. It is found that score has the greatest impact on the prediction of comment controversiality. 
+</p>
 			</div>
 			<div class="col-xs-12 col-md-5 right">
-			  <img src="../images/index2.jpg" class="imgb" alt="c">
+			  <img src="../images/con1.jpg" class="imgb" alt="c">
+			  <br>
+			  <br>
+			  <br>
+			  <br>
+			  <br>
+			  <br>
+			  <img src="../images/intro2.png" class="imgb" alt="c">
 			</div>
 		</div>
-	</div>
-	<div class="container coffee">
-		<div class="row ">
-				<div class="tit">
-					<h2>Question for this project</h2>
-				</div>
-				<h3>Business goal 1:</h3>
-				<p> EDA: How much has the cryptocurrency community on Reddit grown over the period of time in the given data and which cryptocurrency receives the most attention?</p>
-				<h3>Technical proposal:</h3>
-				<p>Determine the total count of submissions/comments by month. Plot the total count against time to explore the trend in growth. Use Regex to find submissions and comments that include keywords such as “bitcoin”, “dogecoin”, “tether”, “ethereum”. Conduct counts on those submissions and comments by month and by year, together with the total count of each currency. Tabulate the result to see which which cryptocurrency behaves the best.</p>
-				<h3>Business goal 2:</h3>
-				<p>EDA: Whether the cryptocurrency-related discussions are highly rated on Reddit, can we trust the labels given by Reddit such as gilded?</p>
-				<h3>Technical proposal:</h3>
-				<p>Determine the distribution of scores (upvotes - downvotes) for cryptocurrency subreddit submissions by distinguished and gilded variables. Produce a violine plot to visualize the distribution. Find the basic distribution statistics and check whether cryptocurrency subreddits are highly rated.</p>
-				<h3>Business goal 3:</h3>
-				<p>EDA: When are people more willing to talk about cryptocurrency one day(during work hours or after-work hours)? Or What time period is the cryptocurrency discussion more heated?</p>
-				<h3>Technical proposal:</h3>
-				<p>Explore the daily activity of subreddits and determine when is Reddit the most active throughout a week. Create three dummy variables during three time periods 0:00 am- 7:59 am (Sleep), 8:00 am-15:59 pm (working time), and 16:00 pm-23:59 pm(Afterwork).</p>
-				<h3>Business goal 4:</h3>
-				<p>EDA: How many words should a poster write in the comment to gain a high score, get distinguished, or get gilded under cryptocurrency-related subreddits?</p>
-				<h3>Technical proposal:</h3>
-				<p>First generate the new variable, the length of every comment under the subreddits related to cryptocurrencies. Then find the correlation between the comment length and variables distinguished/score/gilded by plotting the distribution of comment length based on scores(barplot), and dummy variables(distinguished/gilded)(violin plots). Also, compute the correlation coefficients between the comment length and variables distinguished/score/gilded.</p>
-				<h3>Business goal 5:</h3>
-				<p>NLP: With the popularity of cryptocurrencies, what are the most important topics or factors people care about regarding cryptocurrencies?</p>
-				<h3>Technical proposal:</h3>
-				<p>First split the sentences into words, stem, and delete stopwords. Then use CountVectorizer to count the number of words with real meanings. Finally, use TF-IDF to find the words’ importance and extract the most important words.</p>
-				<h3>Business goal 6:</h3>
-				<p>NLP: What’s people’s attitude on Reddit posts and comments that mention the buzzwords?</p>
-				<h3>Technical proposal:</h3>
-				<p>Reuse the most frequent words acquired earlier, and filter for the sentences that contain the buzzwords. Then perform sentiment analysis on the corpus. Use TextBlob and Vader to find the sentiment polarity. Also, do the data visualization of the sentimental polarity distribution.
-				</p>
-				<h3>Business goal 7:</h3>
-				<p>NLP: For one of the most popular branches of cryptocurrency, how does sentiment related to bitcoin change with respect to its price?</p>
-				<h3>Technical proposal:</h3>
-				<p>Use NLP to identify posts that mention dogecoins, or look at future forms of dogecoins. Perform sentiment analysis on posts and assign a positive or negative value to each post. To determine the market development potential of dogecoin as an emerging virtual currency.</p>
-				<h3>Business goal 8:</h3>
-				<p>ML: We want to automatically generate the community that a post belongs to rather than let the poster find it themselves.</p>
-				<h3>Technical proposal:</h3>
-				<p>Based on the user's theme, we recommend what subreddit theme is suitable for him. Build a Naive Bayes model to determine the user's topic, and finally, use the model to suggest his own suitable topic for the new post.
-				</p>
-				<h3>Business goal 9:</h3>
-				<p>ML: We want to help Reddit to find out whether a cryptocurrency’s comment is controversial or not.</p>
-				<h3>Technical proposal:</h3>
-				<p>First, properly choose important and distinct variables that can be used to predict controversial variables(dummy variable). And then utilize regression and clustering algorithms to predict the values of controversial variables. Finally, compare the real variables and predicted variables and get the algorithm prediction accuracy and find out whether the algorithm can be put into real-world implementation.</p>
-				<h3>Business goal 10:</h3>
-				<p>ML: We want to help Reddit to judge a cryptocurrency’s comment’s quality based on the overall ratings it received.</p>
-				<h3>Technical proposal:</h3>
-				<p>First, properly choose important and distinct variables that can be used to predict the score variable(integer variable). And then utilize clustering algorithms to predict the values of the score variable. Finally, compare the real variables and predicted variables and get the algorithm prediction accuracy and find out whether the algorithm can be put into real-world implementation.
+		<br>
+	<br>
+			  <br>
+			  <br>
+		<div class="row">
+			<div class="col-xs-12 col-md-5 left">
+			  <br>
+			  <img src="../images/con4.png" class="imgb" alt="c">
+			  <br>
+			  <br>
+			  <br>
+			  <img src="../images/con3.png" class="imgb" alt="c">
+			</div>
+			<div class="col-xs-12 col-md-7 right">
+			   <ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>What could be done in the future?</li></ul>
+				<p>So far, we have laid the groundwork for building functions that could actually be useful as new features of Reddit. We also design plans to improve both of our machine-learning models so that they could have more value in real-life applications. 
+</p>
+<p>
+For model 1, we plan to generalize the model by training on potentially the whole Pushshift Reddit dataset with data from all subreddits available. This would allow the model to not only be able to create tags for comments within a certain subreddit but also suggest other subreddits that are strongly correlated, providing more exposure to related but potentially overlooked subreddits. 
+</p>
+<p>
+  For model 2, we reckon it could be integrated into Reddit so that if a comment is determined to be highly controversial, the comment would be blurred for the viewer at first. A confirmation system could be implemented as well, which reveals the hidden message upon the view’s acknowledgment. To achieve this, the model needs to be upgraded so that it is able to conduct multiclass classification instead of binary. With multiple degrees of controversiality, we will be able to establish a threshold that determines whether or not a comment should be displayed directly.
 </p>
 			</div>
 		</div>
+	</div>
 	</div>
 	
 	 <!-- footer -->
