@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="bg" lang="en">
+<style>
+h1 {padding-left:10px;}
+p {
+    padding-left:10px;
+    font-size: 20px;
+}
+td {padding-left:10px;}
+table tr th, table tr td{border:1px solid black;}
+body {background: #DEFEFD;}
+li a, .dropbtn {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: #BFEFFF;
+}
+li.dropdown {
+    display: block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    
+}
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+.dropdown-content a:hover {background-color: #BFEFFF}
+.dropdown:hover .dropdown-content {
+    display: block;
+}ck;}
+
+</style>
+<head>
+	<title>EDA</title>
+	<meta charset="utf-8" />
+	<link href="../website-source/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<link rel="stylesheet" type="text/css" href="../website-source/style.css">
+	<link rel="stylesheet" type="text/css" href="../website-source/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+	<div class="navs container">
+			<nav class="navbar navbar-default col-md-12 col-xs-12" >
+			    <div class="container-fluid"> 
+			    <div class="navbar-header">
+			        <button type="button" class="navbar-toggle" data-toggle="collapse"
+			                data-target="#example-navbar-collapse"> 502 project
+			            <span class="sr-only"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			        </button>
+			        <a class="navbar-brand" href="#"><span>Cryptocurrency Analysis</span></a>
+			    </div>
+			    <div class="collapse navbar-collapse" id="example-navbar-collapse">
+			        <ul class="nav navbar-nav">
+			            <li><a href="index.html">Home</a></li>
+			            <li><a href="eda.html" class="active"> EDA</a></li>
+			            <li><a href="NLP.html">NLP</a></li>
+			            <li><a href="ML.html"> ML</a></li>
+			            <li><a href="Conclusions.html">Conclusions</a></li>
+			        </ul>
+			    </div>
+			    </div>
+			</nav>
+	</div>
+    <div>
+		<a href="javaScript:;"><img src="../images/eda.jpg" class="imga" alt="c"></a>
+	</div>
+	<div class="container ways">
+		<div class="tit">
+			<h2> Executive Summary </h2>
+		</div>
+		<div class="row ">
+			<div class="col-xs-12">
+			  <center><p><a href="../website/EDA_code.html" class="btn btn-info">EDA Code Here</a></center>
+			  
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>
+</li></ul>
+
+
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>
+</li></ul>
+	      
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	<div class="container ways">
+		<div class="tit">
+			<h2>Analysis Report </h2>
+		</div>
+		<div class="row ">
+			<div class="col-xs-12">
+				<h2> 1. Data Ingestion</h2>
+				<p>
+				  The dataset we use is Reddit Archive data from January 2021 through the end of August 2022, representing about 8TB of uncompressed text JSON data which have been converted to two parquet files (about 1TB): submissions, and comments. In our project, we will mainly use the data of the subreddit Cryptocurrency. 
+
+				</p>
+			</div>
+		</div>
+		
+		
+		<div class="row ">
+			<div class="col-xs-12">
+				<h2> 2. Data Cleaning</h2>
+				<ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Desired Column Extraction
+</li></ul>
+				<p>According to the paper The Pushshift Reddit Dataset, there are some interesting columns we can use.</p>
+				 <table width="100%" style="border-collapse:collapse;">
+        <tr>
+            <th style="text-align:center;font-size:24px;padding:5px;">Comments Dataset</th>
+            <th style="text-align:center;font-size:24px;padding:5px;">Submission Dataset</th>
+        </tr>
+        <tr valign="center" halign="center">
+            <td width="50%" style="text-align:left;padding:5px;list-style-type: disc; font-style: italic;">
+					   <li>"Body" is the original text of the comments and is the main part of the dataset. Text analysis will be performed here.(String)</li>
+					  <li>"Created_utc" is the unix timestamp of when the comment was created.(Integer)</li>
+					  <li>"Score" shows the popularity of the comment. (Integer)</li>
+					  <li>"Gilded" shows how many times the comment has received reddit gold.(Long)</li>
+					  <li>"Controversial" refers to whether the comment was deemed controversial. 2% has a value of 1 and 98% has a value of 0.(Long)</li>
+					  <li>"Distinguished" shows whether the comment was distinguished or not. This would be either an administrator or a moderator. But in this dataset, about 10% are "Moderated" and 90% are not.(String)</li>
+					  <li>"Parent_id" links to the post to which the comment belongs. But still need other dataset to get the original text.(String)</li>
+					  <li>"Author_cakeday" tells if the author is on the first day of registration.(Boolean)</li>
+            </td>
+            <td width="50%" style="text-align:left;padding:5px;list-style-type: disc; font-style: italic;">
+                 <li>"Title" The title that is associated with the submission, e.g., “What did you think of the ending of Rogue One?” (String)</li>
+                 <li>"selftext" The text that is associated with the submission (String).</li>
+                 <li>"Created_utc" is the unix timestamp of when the comment was created.(Integer)</li>
+                 <li>"Score" shows the popularity of the comment. (Integer)</li>
+                 <li>"num_comments" The number of comments associated with this submission, e.g., 7 (Integer).</li>
+                 <li>"over_18" Flag that indicates whether the submission is Not-Safe-For-Work, e.g., false (Boolean).</li>
+                 <li>"Gilded" shows how many times the comment has received reddit gold.(Long)</li>
+                 <li>"Distinguished" shows whether the comment was distinguished or not. This would be either an administrator or a moderator. But in this dataset, about 10% are "Moderated" and 90% are not.Flag to determine whether the submission is distinguished2 by moderators. “null” means not distinguished (String).</li>
+                 <li>"Author_cakeday" tells if the author is on the first day of registration. (Boolean)</li>
+            </td>
+        </tr>
+    </table>
+    <ul style="list-style-type: disc; font-size: 25px; font-style: italic;"><li>Feature Generation
+</li></ul>
+			<p>Based on our need, we created different variables for submission and comment dataset.</p>
+     <table width="100%" style="border-collapse:collapse;">
+        <tr>
+            <th style="text-align:center;font-size:24px;padding:5px;">Comments Dataset</th>
+            <th style="text-align:center;font-size:24px;padding:5px;">Submission Dataset</th>
+        </tr>
+        <tr valign="center" halign="center">
+            <td width="50%" style="text-align:left;padding:5px;list-style-type: disc; font-style: italic;">
+					  <li>"year": Integer variable, shows which year people post</li>
+					  <li>"month": Integer variable, shows which month people post</li>
+					  <li>"day_of_week": String variable, displays the reddit submissions and comments out of the days of the week they were posted</li>
+					  <li>"hour": Integer variable, shows what time people post</li>
+					  <li>"dayhour_dummy": Boolean variable, hour 0-7 as "sleep", hour 8-15 "work time", hour 16-23 as "after-time" (dummy variable)</li>
+            </td>
+            <td width="50%" style="text-align:left;padding:5px;list-style-type: disc; font-style: italic;">
+            <li>"is_gilded": Boolean variable, shows whether the submission is gilded or not. When gilded = 0, is_gilded = false. Otherwise, is_gilded = true.</li>
+					  <li>"is_distinguished": Boolean variable, shows whether the submission is distinguished or not. When distinguished is Null, is_distinguished = false. Otherwise, is_distinguished = true.</li>
+					  <li>"year": Integer variable, shows which year people post</li>
+					  <li>"month": Integer variable, shows which month people post</li>
+					  <li>"day_of_week": String variable, displays the reddit submissions and comments out of the days of the week they were posted</li>
+					  <li>"hour": Integer variable, shows what time people post</li>
+					  <li>"dayhour_dummy": Boolean variable, hour 0-7 as "sleep", hour 8-15 "work time", hour 16-23 as "after-time" (dummy variable)</li>
+            </td>
+        </tr>
+    </table>
+				</div>
+			</div>
+		</div>
+	<div class="container ways">
+		<div class="row ">
+			<div class="col-xs-12">
+			  <h2> 3. Data visualization</h2>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 1:</h2>
+				<p>EDA: How much has the cryptocurrency community on Reddit grown over the period of time in the given data and which cryptocurrency receives the most attention?</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>Determine the total count of submissions/comments by month. Plot the total count against time to explore the trend in growth. Use Regex to find submissions and comments that include keywords such as “bitcoin”, “dogecoin”, “tether”, “ethereum”. Conduct counts on those submissions and comments by month and by year, together with the total count of each currency. Tabulate the result to see which which cryptocurrency behaves the best.</p>
+			</div>
+			<div class="col-xs-12">
+				<center><a href="../images/figure_line_eda.html" target="_blank"> <iframe src="../images/figure_line_eda.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure:Count of Cryptocurrency Subreddit Submissions Over Time</center>
+				<p>
+				  The graph is about the count of the cryptocurrency subreddit submissions over time from January 2021 to August 2022. The line plot shows that there are several significant spikes in the number of posts during Feb 21, May/Jun 21, Aug/Sep 21, and Dec 21. However, the number of posts has been declining since then. To investigate the probable reason behind this decrease in activity, we plan to incorporate external data on the price of cryptocurrencies and determine if there is any correlation between market price of cryptocurrencies and their reddit popularity. 
+				</p>
+			</div>
+		<div class="col-xs-12">
+				<center><a href="../images/fig_2.html" target="_blank"> <iframe src="../images/fig_2.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure:Number of Submissions for Different Cryptocurrencies</center>
+				<br><p>
+				  The image shows a histogram of the number of submissions owned by each type of cryptocurrencies. The x-axis represents the type of cryptocurrency, and y represents the counts of submissions. As you can see from the graph, the most submissions come from btc, with the number checking over 80k. From the above bar chart, we found the top 5 mentioned cryptocurrencies are Bitcoin(BTC), ETH(Ethereum), Dogecoin(DOGE), Cardano(ADA), and Solana(SOL).
+				</p>
+			</div>
+		</div>
+			
+		<div class="row ">
+			<div class="col-xs-12">
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 2:</h2>
+				<p>EDA: Whether the cryptocurrency-related discussions are highly rated on Reddit, can we trust the labels given by Reddit such as gilded?</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>Determine the distribution of scores (upvotes - downvotes) for cryptocurrency subreddit submissions by distinguished and gilded variables. Produce a violine plot to visualize the distribution. Find the basic distribution statistics and check whether cryptocurrency subreddits are highly rated.</p>
+			</div>
+			
+			<div class="col-xs-12">
+				<center><a href="../images/fig_violin.html" target="_blank"> <iframe src="../images/fig_violin.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure:The Distribution of CryptoCurrency Submission Scores Based on Gilded</center>
+				<p>
+				  The figure is the distribution of cryptocurrency subreddit scores based on gilded. The x represents whether the submission is gilded, and y indicates the score of subreddit scores. From the distribution plot, we could notice the score of cryptocurrency discussions can go up to 5000, which means that most of the cryptocurrency submissions are highly rated. In the meanwhile, if we compare the gilded submissions and ungilded submissions, we can find that the gilded submissions have higher scores than ungilded submissions.
+				</p>
+			</div>
+		</div>
+		<div class="row ">
+			<div class="col-xs-12">
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 3:</h2>
+				<p>EDA: When are people more willing to talk about cryptocurrency one day(during work hours or after-work hours)? Or What time period is the cryptocurrency discussion more heated?</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>Technical proposal: Explore the daily activity of subreddits and determine when is Reddit the most active throughout a week. Create three dummy variables during three time periods 0:00 am- 7:59 am (Sleep), 8:00 am-15:59 pm (working time), and 16:00 pm-23:59 pm(Afterwork).</p>
+			</div>
+			<div class="col-xs-12">
+				<center><a href="../images/fig_3.html" target="_blank"> <iframe src="../images/fig_3.html" height="550" width="750" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure:Number of Submissions by Day of A Week towards Three Periods</center>
+				<p>
+				 The line chart is about the number of submissions by day of a week towards three periods of one day. In this figure, the top line represents the number of submissions during the after-work period that shows people are most active during the after-work time, whatever in any day of week. Also, there is a peak on Thursday so that people like to talk about cryptocurrency on Thursday. Since there is a big drop during weekends time, we guess cryptocurrency is not a popular topic in spare time.
+				</p>
+			</div>
+		</div>
+		
+		<div class="row ">
+			<div class="col-xs-12">
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;"> Business goal 4:</h2>
+				<p>EDA: How many words should a poster write in the comment to gain a high score, get distinguished, or get gilded under cryptocurrency-related subreddits?</p>
+				<h2 style="list-style-type: disc; font-size: 25px; font-style: italic;">Technical proposal:</h2>
+				<p>First generate the new variable, the length of every comment under the subreddits related to cryptocurrencies. Then find the correlation between the comment length and variables distinguished/score/gilded by plotting the distribution of comment length based on scores(barplot), and dummy variables(distinguished/gilded)(violin plots). Also, compute the correlation coefficients between the comment length and variables distinguished/score/gilded.</p>
+			</div>
+		<div class="col-xs-12">
+				<center><a href="../images/fig_5.html" target="_blank"> <iframe src="../images/fig_5.html" height="550" width="1050" title="Iframe Example" style='border:none'></iframe></a>
+				<br>Figure:Words Count for High Score</center>
+				<p>
+				This image is the distribution of words counted for high scores. The x-axis is the word count, and y-axis represents the score. This graph clearly expresses how many words there are in the high scoring post of reddit. It is interesting to note that the higher the score, the more posts tend to use few words to describe their problems. 
+				</p>
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
+	
+	  <!-- footer -->
+	<div class="footer">
+		<div class="container">
+			<div class="row ft">
+				<div class="col-md-12 col-xs-12">
+					<h4>Contact us</h4>
+					<p>Changwen Li/ cl1479@georgetown.edu  / (315)960-6666</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+
+    <script src="../website-source/bootstrap.min.js"></script>
+</body>
+</html>
